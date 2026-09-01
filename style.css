@@ -1,166 +1,21 @@
-/* 馬CLUB — apple.com ストアフロント準拠。常にライト地(apple.com同様ダークモード無し) */
-:root {
-  --page: #ffffff;
-  --tile-light: #f5f5f7;
-  --tile-dark: #000000;
-  --ink: #1d1d1f;
-  --ink-2: #6e6e73;
-  --ink-on-dark: #f5f5f7;
-  --ink2-on-dark: #86868b;
-  --line: #d2d2d7;
-  --blue: #0066cc;
-  --blue-btn: #0071e3;
-  --up: #008a2e;
-  --down: #d70015;
-  --nav-bg: rgba(22, 22, 23, .92);
-}
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body {
-  margin: 0;
-  background: var(--page);
-  color: var(--ink);
-  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Hiragino Sans",
-    "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
-  font-size: 17px;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-}
-a { color: var(--blue); text-decoration: none; }
-a:hover { text-decoration: underline; }
-a:focus-visible { outline: 2px solid var(--blue-btn); outline-offset: 3px; border-radius: 4px; }
+:root{--ink:#1d1d1f;--muted:#6e6e73;--tile:#f5f5f7;--blue:#0066cc;--button:#0071e3;--plus:#008a2e;--minus:#d70015}*{box-sizing:border-box}body{margin:0;background:#fff;color:var(--ink);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Helvetica Neue","Hiragino Sans",sans-serif}a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}.nav{height:44px;background:rgba(22,22,23,.94);position:sticky;top:0;z-index:2}.nav>div{height:44px;max-width:1024px;margin:auto;padding:0 18px;display:flex;justify-content:space-between;align-items:center}.brand,.nav a{color:#fff}.nav nav{display:flex;gap:18px;font-size:13px}.home,main,.race-head{max-width:1100px;margin:auto;padding:22px}.hero{min-height:360px;text-align:center;color:#fff;padding:65px 20px;position:relative;overflow:hidden;border-radius:22px;background:linear-gradient(180deg,#0b1030 0%,#1b2a6b 42%,#7a4bd6 78%,#ff8a5c 100%)}.hero h1{font-size:clamp(38px,8vw,72px);margin:5px}.track{position:absolute;width:130%;height:150px;border:20px solid #fff;border-bottom:0;border-radius:50% 50% 0 0;bottom:-120px;left:-15%;opacity:.96}.button{display:inline-block;color:#fff;background:var(--button);padding:9px 17px;border-radius:999px}.race-tabs{margin:32px 0}.tab-buttons{display:flex;gap:8px;overflow:auto}.tab-buttons button{border:0;border-radius:999px;padding:8px 16px;background:var(--tile);font:inherit}.venue-panel h2{font-size:22px}.race-line{display:grid;grid-template-columns:48px 1fr auto;gap:10px;padding:14px 4px;border-bottom:1px solid #d2d2d7;color:var(--ink)}.race-line small{grid-column:2;color:var(--muted)}.pill{grid-column:3;grid-row:1/3;align-self:center;padding:4px 9px;border-radius:999px;font-size:12px;font-weight:600}.plus{color:var(--plus);background:#eaf7ee}.minus{color:var(--minus);background:#fdeef0}.wait{background:#e8f2ff;color:var(--blue)}.night{background:#eee;color:var(--muted)}.two-up{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}.tile{background:var(--tile);border-radius:18px;padding:30px;text-align:center}.tile h2{font-size:28px}.turf{color:#fff;background:linear-gradient(160deg,#04220f,#0f6b31 70%,#4fae4f)}.turf a,.sunset a{color:#fff}.sunset{color:#fff;background:linear-gradient(160deg,#2a0a3d,#7a1e6e 60%,#e0526b)}.gradient-number{font-size:58px;font-weight:700;margin:0;background:linear-gradient(92deg,#0a84ff,#bf5af2 55%,#ff375f);-webkit-background-clip:text;background-clip:text;color:transparent}.race-head{text-align:center;padding-top:55px}.race-head h1{font-size:clamp(32px,6vw,52px)}.race-head span{font-size:.42em;color:var(--blue)}section{margin:32px 0}h1,h2,h3{letter-spacing:-.02em}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:10px 8px;border-bottom:1px solid #d2d2d7;text-align:left;vertical-align:top}th{color:var(--muted);white-space:nowrap}.horse-list{display:flex;flex-direction:column}.horse-row{display:flex;align-items:center;gap:12px;padding:12px 4px;border-bottom:1px solid #d2d2d7}.waku-chip{flex:none;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;border:1px solid #d2d2d7}.h-main{flex:1;min-width:0}.h-main a{font-weight:600;font-size:16px}.h-main small{display:block;color:var(--muted);font-size:12.5px}.h-note{margin:4px 0 0;font-size:12.5px;color:var(--muted);line-height:1.45}.h-right{flex:none;text-align:right;display:flex;align-items:center;gap:10px}.h-mark{font-size:20px;width:26px;text-align:center}.h-odds{font-variant-numeric:tabular-nums;font-weight:600}.h-odds small{display:block;font-weight:400;color:var(--muted);font-size:11px}.Waku1{background:#fff;color:#111}.Waku2{background:#333;color:#fff}.Waku3{background:#e73737;color:#fff}.Waku4{background:#2d70c9;color:#fff}.Waku5{background:#f5d73c;color:#111}.Waku6{background:#3e9a52;color:#fff}.Waku7{background:#e58b32;color:#111}.Waku8{background:#e98aa8;color:#111}.result{display:flex;justify-content:space-between;align-items:center;padding:18px;border-radius:14px}.result strong{font-size:30px}footer{margin-top:50px;padding:28px;text-align:center;background:var(--tile);color:var(--muted);font-size:12px}@media(max-width:620px){.race-line{grid-template-columns:38px 1fr}.pill{font-size:11px}.hero{border-radius:0;margin:-22px}.home{overflow:hidden}.nav nav{gap:10px}}
 
-/* --- グローバルナビ (黒・細) --- */
-.nav {
-  position: sticky; top: 0; z-index: 10;
-  background: var(--nav-bg);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-}
-.nav-in {
-  max-width: 1024px; margin: 0 auto; padding: 0 22px;
-  display: flex; align-items: center; justify-content: space-between; height: 44px;
-}
-.brand { font-weight: 600; font-size: 17px; color: #f5f5f7; letter-spacing: -.01em; }
-.brand:hover { text-decoration: none; }
-.nav nav { display: flex; gap: 28px; }
-.nav nav a { color: rgba(255,255,255,.8); font-size: 12px; }
-.nav nav a.on, .nav nav a:hover { color: #fff; text-decoration: none; }
-
-/* --- タイル --- */
-.tiles { padding: 12px; display: grid; gap: 12px; max-width: 1400px; margin: 0 auto; }
-.grid-2 { display: grid; gap: 12px; }
-@media (min-width: 740px) { .grid-2 { grid-template-columns: 1fr 1fr; } }
-.tile {
-  border-radius: 18px; overflow: hidden; text-align: center;
-  padding: 56px 24px 60px; background: var(--tile-light); color: var(--ink);
-}
-.tile.dark { background: var(--tile-dark); color: var(--ink-on-dark); }
-.tile.hero { padding: 72px 24px 84px; }
-.tile .eyebrow {
-  font-size: 14px; font-weight: 600; margin: 0 0 4px;
-  color: var(--ink-2);
-}
-.tile.dark .eyebrow { color: var(--ink2-on-dark); }
-.tile h2, .tile .headline {
-  font-size: clamp(32px, 5.4vw, 48px); font-weight: 600; letter-spacing: -.015em;
-  margin: 0; line-height: 1.15; text-wrap: balance;
-}
-.tile.hero .headline { font-size: clamp(40px, 7vw, 64px); }
-.tile .sub {
-  font-size: clamp(17px, 2.4vw, 21px); margin: 8px auto 0; max-width: 34em;
-  color: var(--ink-2);
-}
-.tile.dark .sub { color: var(--ink2-on-dark); }
-.tile .big-num {
-  font-size: clamp(80px, 14vw, 128px); font-weight: 700; letter-spacing: -.04em;
-  line-height: 1.05; margin: 10px 0 0; font-variant-numeric: tabular-nums;
-}
-.tile .big-num small { font-size: .36em; font-weight: 600; color: var(--ink2-on-dark); }
-.tile .links { margin-top: 22px; display: flex; gap: 24px; justify-content: center; align-items: center; flex-wrap: wrap; }
-.btn {
-  background: var(--blue-btn); color: #fff; font-size: 16px; font-weight: 500;
-  padding: 11px 22px; border-radius: 999px; display: inline-block;
-}
-.btn:hover { text-decoration: none; opacity: .92; }
-.link { font-size: 17px; }
-.link::after { content: " ›"; }
-.tile .meta { margin-top: 14px; font-size: 14px; color: var(--ink-2); }
-.tile.dark .meta { color: var(--ink2-on-dark); }
-.badge-hit { color: var(--up); font-weight: 600; }
-.badge-miss { color: var(--down); font-weight: 600; }
-
-/* 週別収支ミニチャート */
-.chart { display: flex; align-items: flex-end; justify-content: center; gap: 10px; height: 90px; margin-top: 26px; }
-.bar { width: 30px; border-radius: 6px 6px 0 0; }
-.bar.pos { background: var(--up); }
-.bar.neg { background: var(--down); }
-
-/* --- 記事ページ (レース詳細/アーカイブ/成績) --- */
-.page-head, .race-head { max-width: 700px; margin: 0 auto; padding: 64px 22px 8px; text-align: center; }
-.page-head h1, .race-head h1 {
-  font-size: clamp(36px, 6vw, 52px); font-weight: 600; letter-spacing: -.015em; margin: 6px 0;
-  text-wrap: balance;
-}
-.race-head .k, .page-head .lede { color: var(--ink-2); font-size: 16px; margin: 0; }
-.race-head .g {
-  font-size: .42em; vertical-align: .6em; font-weight: 600; color: var(--blue);
-  border: 1.5px solid var(--blue); padding: 2px 10px; border-radius: 999px; margin-left: 8px;
-}
-main { max-width: 900px; margin: 0 auto; padding: 8px 22px 80px; }
-section { margin-top: 52px; }
-main h2 { font-size: 28px; font-weight: 600; letter-spacing: -.01em; margin: 0 0 14px; }
-main h3 { font-size: 19px; font-weight: 600; margin: 30px 0 10px; }
-main p { max-width: 42em; }
-
-/* --- テーブル --- */
-.tbl-wrap { overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; font-size: 15px; font-variant-numeric: tabular-nums; }
-th {
-  text-align: left; font-size: 12px; font-weight: 600; letter-spacing: .06em;
-  text-transform: uppercase; color: var(--ink-2);
-  padding: 8px 14px 8px 0; border-bottom: 1px solid var(--line);
-}
-td { padding: 13px 14px 13px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
-td.num { white-space: nowrap; }
-td.pos { color: var(--up); font-weight: 600; }
-td.neg { color: var(--down); font-weight: 600; }
-.gr { font-size: 12px; color: var(--ink-2); }
-.marks { min-width: 620px; }
-.bets { min-width: 480px; }
-.list { min-width: 520px; }
-.marks .mk { font-size: 20px; width: 36px; }
-.marks td strong { white-space: nowrap; }
-.marks .jk { display: block; color: var(--ink-2); font-size: 13px; }
-.marks .rs { color: var(--ink-2); font-size: 14px; min-width: 16em; }
-
-/* --- 結果 --- */
-.result-strip {
-  display: flex; justify-content: space-between; align-items: center; gap: 12px;
-  border-radius: 18px; padding: 20px 24px; margin-bottom: 18px; flex-wrap: wrap;
-}
-.result-strip.plus { background: #eaf7ee; }
-.result-strip.minus { background: #fdeef0; }
-.result-strip .rk { font-weight: 600; }
-.result-strip .rv { font-size: 30px; font-weight: 700; font-variant-numeric: tabular-nums; }
-.result-strip.plus .rv { color: var(--up); }
-.result-strip.minus .rv { color: var(--down); }
-.result-strip .rv small { font-size: 14px; font-weight: 500; color: var(--ink-2); }
-.hansei { color: var(--ink-2); }
-
-/* --- 成績カード --- */
-.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
-.stat { background: var(--tile-light); border-radius: 18px; padding: 22px; text-align: center; }
-.stat .k { color: var(--ink-2); font-size: 13px; margin: 0 0 2px; }
-.stat .v { font-size: 32px; font-weight: 700; margin: 0; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
-
-/* --- フッター --- */
-.foot {
-  background: var(--tile-light); margin-top: 24px;
-  padding: 26px 22px 44px; color: var(--ink-2); font-size: 12px; text-align: center;
-}
-.foot p { margin: 4px 0; max-width: 60em; margin-inline: auto; }
-
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-}
+/* --- netkeiba SP準拠のレース詳細UI (apple皮) --- */
+.race-ctrl{max-width:1100px;margin:auto;display:flex;align-items:center;gap:8px;padding:10px 18px}
+.ctrl-chip{background:var(--tile);border-radius:999px;padding:7px 14px;font-size:13px;font-weight:600;color:var(--ink)}
+a.ctrl-chip:hover{text-decoration:none;background:#e8e8ed}
+.rnav{margin-left:auto;display:flex;gap:6px}
+.rnav-btn{background:var(--tile);border-radius:10px;padding:7px 12px;font-size:13px;font-weight:600;color:var(--blue)}
+.rnav-btn.off{color:#c7c7cc}
+a.rnav-btn:hover{text-decoration:none;background:#e8e8ed}
+.race-head2{max-width:1100px;margin:auto;display:flex;gap:12px;align-items:flex-start;padding:6px 18px 0}
+.rbadge{flex:none;background:var(--button);color:#fff;font-weight:700;font-size:18px;border-radius:12px;width:52px;height:52px;display:flex;align-items:center;justify-content:center}
+.race-head2 h1{margin:0;font-size:clamp(24px,5vw,34px);letter-spacing:-.015em}
+.race-head2 h1 a{color:var(--ink)}
+.race-head2 p{margin:3px 0 0;color:var(--muted);font-size:13.5px}
+.gbadge{display:inline-block;background:var(--button);color:#fff;font-size:12px;font-weight:700;border-radius:6px;padding:2px 8px;margin-right:8px;vertical-align:middle}
+.race-main{padding-top:8px}
+.segbar{display:flex;background:var(--tile);border-radius:12px;padding:3px;gap:2px;margin:10px 0 4px;position:sticky;top:48px;z-index:1}
+.seg{flex:1;border:0;background:transparent;font:inherit;font-size:14px;font-weight:600;color:var(--muted);padding:9px 0;border-radius:10px;cursor:pointer}
+.seg.on{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.pane>section{margin-top:14px}
