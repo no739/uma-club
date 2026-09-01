@@ -19,3 +19,15 @@ a.rnav-btn:hover{text-decoration:none;background:#e8e8ed}
 .seg{flex:1;border:0;background:transparent;font:inherit;font-size:14px;font-weight:600;color:var(--muted);padding:9px 0;border-radius:10px;cursor:pointer}
 .seg.on{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.12)}
 .pane>section{margin-top:14px}
+
+/* レース一覧シート */
+.listbtn{border:0;cursor:pointer}
+.rlist-sheet{max-width:1100px;margin:0 auto 6px;background:#fff;border:1px solid #d2d2d7;border-radius:16px;padding:14px 16px;box-shadow:0 12px 34px rgba(0,0,0,.14);position:relative;z-index:3}
+.rlist-head{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:14px;margin-bottom:8px}
+.rlist-close{border:0;background:var(--tile);border-radius:999px;width:26px;height:26px;cursor:pointer;font-size:12px}
+.rlist-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px solid #ececf0}
+.rlist-venue{flex:none;width:44px;font-weight:700;font-size:13px}
+.rchips{display:flex;flex-wrap:wrap;gap:6px}
+.rchip{width:32px;height:32px;border-radius:9px;background:var(--tile);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:var(--ink)}
+.rchip:hover{text-decoration:none;background:#e8e8ed}
+.rchip.on{background:var(--button);color:#fff}
