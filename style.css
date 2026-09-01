@@ -61,3 +61,15 @@ a.rnav-btn:hover{text-decoration:none;background:#e8e8ed}
 .gb-blue{background:#2d70c9}.gb-red{background:#d63b4f}.gb-green{background:#2f9e5b}
 .race-line2 .pill{flex:none}
 .sample-note{background:#fff8e1;border:1px solid #f0dfa0;border-radius:12px;padding:10px 14px;font-size:12.5px;color:#8a6d1a;margin:8px 0 2px}
+
+/* 的中=緑・金額は符号色。コントロールバーは1行固定 */
+.lab-hit{color:var(--plus)}.lab-miss{color:var(--minus)}
+.amt-plus{color:var(--plus);font-style:normal}.amt-minus{color:var(--minus);font-style:normal}
+.pill.hit{background:#eaf7ee}.pill.miss{background:#f2f2f4}
+.pill b,.pill i{font-weight:600}
+.result.hit{background:#eaf7ee}.result.miss{background:#f7f7f9}
+.race-ctrl{flex-wrap:nowrap;overflow-x:auto;gap:6px;padding:8px 14px;background:var(--tile)}
+.race-ctrl .ctrl-chip{background:#fff;white-space:nowrap;padding:8px 12px;font-size:13px;flex:none}
+.race-ctrl .listbtn{width:38px;padding:8px 0;text-align:center;font-size:15px}
+.rnav{flex:none}
+.rnav-btn{background:#fff;white-space:nowrap;font-size:13px;padding:8px 12px}
