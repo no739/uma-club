@@ -81,3 +81,5 @@ a.rnav-btn:hover{text-decoration:none;background:#e8e8ed}
 .marks2 .mh small{display:block;color:var(--muted);font-variant-numeric:tabular-nums}
 .marks2 .rs{color:var(--muted);font-size:13.5px}
 .marks2{min-width:520px}
+.odds-btn{border:0;background:var(--button);color:#fff;border-radius:999px;padding:4px 12px;font:inherit;font-size:12px;font-weight:600;cursor:pointer}
+.odds-ts{color:var(--muted);font-size:12px;margin-left:6px}
