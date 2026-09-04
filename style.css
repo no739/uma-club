@@ -76,3 +76,8 @@ a.rnav-btn:hover{text-decoration:none;background:#e8e8ed}
 .Waku0{background:#f5f5f7;color:#6e6e73}
 .dt-arrow{cursor:pointer;user-select:none}
 .dt-arrow:hover{color:var(--button)}
+.marks2 .mk{font-size:19px;width:34px}
+.marks2 .mh b{white-space:nowrap}
+.marks2 .mh small{display:block;color:var(--muted);font-variant-numeric:tabular-nums}
+.marks2 .rs{color:var(--muted);font-size:13.5px}
+.marks2{min-width:520px}
