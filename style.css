@@ -129,3 +129,26 @@ button,input,select,textarea{font-size:16px}
 .bet-stake{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
 .bet-detail{font-size:15px;font-weight:600;line-height:1.5;word-break:break-word}
 .bet-exp{margin:6px 0 0;font-size:12.5px;color:var(--muted);line-height:1.55}
+
+/* --- レース一覧: netkeiba準拠のグリッド --- */
+.rgrid-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.rgrid{width:100%;border-collapse:collapse;table-layout:fixed}
+.rgrid th{background:#f2f2f4;border:1px solid #dcdce0;padding:7px 4px;text-align:center;font-size:13px;font-weight:700;color:var(--ink);text-transform:none;letter-spacing:0}
+.rgrid th small{display:block;font-weight:500;font-size:10.5px;color:var(--muted)}
+.rgrid td{border:1px solid #dcdce0;padding:0;vertical-align:top}
+.rgrid .rg-r{width:30px;background:#8e8e93;color:#fff;text-align:center;font-weight:700;font-size:13px;padding:6px 0;vertical-align:middle}
+.rgrid th.rg-r{background:#8e8e93;color:#fff}
+.rgrid td a{display:block;padding:6px 5px;color:var(--ink)}
+.rgrid td a:hover{text-decoration:none;background:#fafafa}
+.rgrid td b{display:block;font-size:12.5px;font-weight:600;line-height:1.3}
+.rgrid td small{display:block;font-size:11.5px;color:var(--muted);margin-top:2px;font-variant-numeric:tabular-nums;white-space:nowrap;letter-spacing:-.02em}
+.rgrid td em{display:block;font-style:normal;font-size:10.5px;font-weight:700;margin-top:3px}
+.rgrid .gbadge2{margin-left:4px;font-size:10px;padding:1px 5px;vertical-align:1px}
+.rg-graded{background:#fffbe8}
+.rg-empty{background:#f7f7f9}
+.sf-turf{color:#2f9e5b;font-weight:600}
+.sf-dirt{color:#b06a1e;font-weight:600}
+.sf-jump{color:#6e6e73;font-weight:600}
+.rg-hit{color:var(--plus)}
+.rg-miss{color:var(--minus)}
+.rg-wait{color:var(--blue)}
