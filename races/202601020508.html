@@ -70,15 +70,16 @@
   e.preventDefault();
   ho.textContent=new URL(u,location.href).host;op.href=u;
   mount(u);wv.hidden=false;open=true;document.body.style.overflow='hidden';
-  history.pushState({wv:1},'','#view');
+  // 戻る連打でも離脱しないよう履歴に余裕を持たせる
+  for(var k=0;k<3;k++)history.pushState({wv:1},'','#view');
  });
  // ビューア表示中の「戻る」は無効化する(閉じるのは✕か背景タップのみ)。
  // 履歴を戻し返してサイト離脱を防ぐ。
  window.addEventListener('popstate',function(){
-  if(open)history.pushState({wv:1},'','#view');
+  if(open){history.pushState({wv:1},'','#view');history.pushState({wv:1},'','#view');}
  });
  fetch("../version.json",{cache:"no-store"}).then(function(r){return r.json()}).then(function(v){
-  if(v.build!=="20260904222123" && !sessionStorage.getItem("rl_"+v.build)){
+  if(v.build!=="20260904222402" && !sessionStorage.getItem("rl_"+v.build)){
    sessionStorage.setItem("rl_"+v.build,"1");location.reload();}
  }).catch(function(){});
 })();
