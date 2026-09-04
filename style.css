@@ -88,16 +88,30 @@ a.rnav-btn:hover{text-decoration:none;background:#e8e8ed}
 .odds-num{font-weight:600}
 .marks2 .mh small .odds-hot{font-weight:700}
 .hmark{color:var(--muted);font-size:12px;font-weight:600;margin-right:2px}
-#wv{position:fixed;inset:0;z-index:99;background:#fff;display:flex;flex-direction:column}
-#wv[hidden]{display:none}
-.wv-bar{flex:none;height:52px;background:#1d1d1f;display:flex;align-items:center;gap:10px;padding:0 12px;color:#fff}
-.wv-x{width:34px;height:34px;border:0;border-radius:999px;background:rgba(255,255,255,.18);color:#fff;font-size:15px;cursor:pointer;flex:none}
-.wv-host{flex:1;text-align:center;font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.wv-open{flex:none;color:#6bb7ff;font-size:12.5px}
-.wv-frame{flex:1;width:100%;border:0;background:#fff;-webkit-overflow-scrolling:touch}
+
+
+
+
+
+
+
 .wv-body{flex:1;display:flex;min-height:0}
-.wv-body .wv-frame{flex:1;width:100%;border:0;background:#fff}
+.wv-body 
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 button,input,select,textarea{font-size:16px}
 .seg,.date-tab,.vpill,.tab-buttons button{font-size:16px}
 .odds-btn,.wv-x,.rlist-close{font-size:16px}
+
+/* --- iOSシート風の外部ページビューア --- */
+#wv{position:fixed;inset:0;z-index:99;display:flex;flex-direction:column;justify-content:flex-end}
+#wv[hidden]{display:none}
+.wv-back{position:absolute;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(2px)}
+.wv-sheet{position:relative;height:calc(100% - 46px);background:#fff;border-radius:14px 14px 0 0;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 -8px 30px rgba(0,0,0,.3);animation:wvUp .28s cubic-bezier(.32,.72,0,1)}
+@keyframes wvUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.wv-bar{flex:none;height:56px;display:flex;align-items:center;gap:10px;padding:0 14px;background:rgba(249,249,249,.94);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid #d8d8dc}
+.wv-x,.wv-open{flex:none;width:34px;height:34px;border:0;border-radius:999px;background:rgba(118,118,128,.16);color:#3c3c43;font-size:16px;font-weight:600;display:flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none}
+.wv-x:active,.wv-open:active{background:rgba(118,118,128,.28)}
+.wv-host{flex:1;text-align:center;font-size:15px;font-weight:600;color:#1d1d1f;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wv-body{flex:1;display:flex;min-height:0;background:#fff}
+.wv-body .wv-frame{flex:1;width:100%;border:0;background:#fff}
+@media(prefers-reduced-motion:reduce){.wv-sheet{animation:none}}
