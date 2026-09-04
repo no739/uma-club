@@ -84,3 +84,6 @@ a.rnav-btn:hover{text-decoration:none;background:#e8e8ed}
 .odds-btn{border:0;background:var(--button);color:#fff;border-radius:999px;padding:4px 12px;font:inherit;font-size:12px;font-weight:600;cursor:pointer}
 .odds-ts{color:var(--muted);font-size:12px;margin-left:6px}
 .odds-pending{color:var(--muted)}
+.odds-hot{color:#d70015;font-weight:700}
+.odds-num{font-weight:600}
+.marks2 .mh small .odds-hot{font-weight:700}
