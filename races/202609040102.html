@@ -33,7 +33,7 @@
  window.wvClose=function(){
   if(!open)return;
   open=false;body.innerHTML='';wv.hidden=true;document.body.style.overflow='';
-  if(location.hash==='#view')history.back();
+  if(location.hash==='#view')history.replaceState(null,'',location.pathname+location.search);
  };
  document.addEventListener('click',function(e){
   var a=e.target.closest('a');if(!a)return;
@@ -44,11 +44,13 @@
   mount(u);wv.hidden=false;open=true;document.body.style.overflow='hidden';
   history.pushState({wv:1},'','#view');
  });
+ // ビューア表示中の「戻る」は無効化する(閉じるのは✕か背景タップのみ)。
+ // 履歴を戻し返してサイト離脱を防ぐ。
  window.addEventListener('popstate',function(){
-  if(open){open=false;body.innerHTML='';wv.hidden=true;document.body.style.overflow='';}
+  if(open)history.pushState({wv:1},'','#view');
  });
  fetch("../version.json",{cache:"no-store"}).then(function(r){return r.json()}).then(function(v){
-  if(v.build!=="20260904222031" && !sessionStorage.getItem("rl_"+v.build)){
+  if(v.build!=="20260904222123" && !sessionStorage.getItem("rl_"+v.build)){
    sessionStorage.setItem("rl_"+v.build,"1");location.reload();}
  }).catch(function(){});
 })();
