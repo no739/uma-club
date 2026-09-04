@@ -76,17 +76,11 @@ a.rnav-btn:hover{text-decoration:none;background:#e8e8ed}
 .Waku0{background:#f5f5f7;color:#6e6e73}
 .dt-arrow{cursor:pointer;user-select:none}
 .dt-arrow:hover{color:var(--button)}
-.marks2 .mk{font-size:19px;width:34px}
-.marks2 .mh b{white-space:nowrap}
-.marks2 .mh small{display:block;color:var(--muted);font-variant-numeric:tabular-nums}
-.marks2 .rs{color:var(--muted);font-size:13.5px}
-.marks2{min-width:520px}
 .odds-btn{border:0;background:var(--button);color:#fff;border-radius:999px;padding:4px 12px;font:inherit;font-size:12px;font-weight:600;cursor:pointer}
 .odds-ts{color:var(--muted);font-size:12px;margin-left:6px}
 .odds-pending{color:var(--muted)}
 .odds-hot{color:#d70015;font-weight:700}
 .odds-num{font-weight:600}
-.marks2 .mh small .odds-hot{font-weight:700}
 .hmark{color:var(--muted);font-size:12px;font-weight:600;margin-right:2px}
 
 
@@ -116,3 +110,22 @@ button,input,select,textarea{font-size:16px}
 .wv-body .wv-frame{flex:1;width:100%;border:0;background:#fff}
 @media(prefers-reduced-motion:reduce){.wv-sheet{animation:none}}
 .empty{color:var(--muted);font-size:14px;background:var(--tile);border-radius:12px;padding:14px 16px}
+
+/* --- 予想: 横スクロールしないカード型 --- */
+.pred-summary{font-size:15px;line-height:1.75;margin:0 0 18px}
+.mark-list{display:flex;flex-direction:column}
+.mark-item{display:flex;gap:12px;padding:14px 2px;border-bottom:1px solid #ececf0}
+.mk-badge{flex:none;width:32px;text-align:center;font-size:21px;line-height:1.2}
+.mk-body{flex:1;min-width:0}
+.mk-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.mk-head b{font-size:16px}
+.mk-odds{flex:none;font-variant-numeric:tabular-nums}
+.mk-odds small{color:var(--muted);font-size:11.5px;margin-left:3px}
+.mk-reason{margin:5px 0 0;font-size:13.5px;line-height:1.6;color:var(--muted)}
+.bet-list{display:flex;flex-direction:column;gap:10px}
+.bet-item{background:var(--tile);border-radius:14px;padding:14px 16px}
+.bet-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+.bet-type{background:var(--button);color:#fff;font-size:12.5px;font-weight:700;border-radius:6px;padding:3px 10px}
+.bet-stake{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.bet-detail{font-size:15px;font-weight:600;line-height:1.5;word-break:break-word}
+.bet-exp{margin:6px 0 0;font-size:12.5px;color:var(--muted);line-height:1.55}
