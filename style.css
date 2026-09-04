@@ -152,3 +152,10 @@ button,input,select,textarea{font-size:16px}
 .rg-hit{color:var(--plus)}
 .rg-miss{color:var(--minus)}
 .rg-wait{color:var(--blue)}
+
+/* 一覧シート内のグリッド調整 */
+.rlist-sheet{padding:12px 12px 14px}
+.rlist-sheet .rgrid td b{font-size:12px}
+.rlist-sheet .rgrid td small{font-size:11px}
+.rg-cur{outline:2px solid var(--button);outline-offset:-2px}
+.rg-cur a{background:#eaf2ff}
