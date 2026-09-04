@@ -88,3 +88,10 @@ a.rnav-btn:hover{text-decoration:none;background:#e8e8ed}
 .odds-num{font-weight:600}
 .marks2 .mh small .odds-hot{font-weight:700}
 .hmark{color:var(--muted);font-size:12px;font-weight:600;margin-right:2px}
+#wv{position:fixed;inset:0;z-index:99;background:#fff;display:flex;flex-direction:column}
+#wv[hidden]{display:none}
+.wv-bar{flex:none;height:52px;background:#1d1d1f;display:flex;align-items:center;gap:10px;padding:0 12px;color:#fff}
+.wv-x{width:34px;height:34px;border:0;border-radius:999px;background:rgba(255,255,255,.18);color:#fff;font-size:15px;cursor:pointer;flex:none}
+.wv-host{flex:1;text-align:center;font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wv-open{flex:none;color:#6bb7ff;font-size:12.5px}
+.wv-frame{flex:1;width:100%;border:0;background:#fff;-webkit-overflow-scrolling:touch}
