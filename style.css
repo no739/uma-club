@@ -115,3 +115,4 @@ button,input,select,textarea{font-size:16px}
 .wv-body{flex:1;display:flex;min-height:0;background:#fff}
 .wv-body .wv-frame{flex:1;width:100%;border:0;background:#fff}
 @media(prefers-reduced-motion:reduce){.wv-sheet{animation:none}}
+.empty{color:var(--muted);font-size:14px;background:var(--tile);border-radius:12px;padding:14px 16px}
