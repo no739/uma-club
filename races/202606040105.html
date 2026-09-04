@@ -58,4 +58,9 @@
  });
  window.addEventListener('popstate',function(){if(!wv.hidden)wvClose();});
 })();
+// 新しいビルドが出ていたら一度だけ自動で読み直す(スマホのHTMLキャッシュ対策)
+fetch("../version.json",{cache:"no-store"}).then(function(r){return r.json()}).then(function(v){
+ if(v.build!=="20260904221445" && !sessionStorage.getItem("rl_"+v.build)){
+  sessionStorage.setItem("rl_"+v.build,"1");location.reload();}
+}).catch(function(){});
 </script></body></html>
