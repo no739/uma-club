@@ -87,3 +87,4 @@ a.rnav-btn:hover{text-decoration:none;background:#e8e8ed}
 .odds-hot{color:#d70015;font-weight:700}
 .odds-num{font-weight:600}
 .marks2 .mh small .odds-hot{font-weight:700}
+.hmark{color:var(--muted);font-size:12px;font-weight:600;margin-right:2px}
