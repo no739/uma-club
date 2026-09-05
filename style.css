@@ -159,3 +159,7 @@ button,input,select,textarea{font-size:16px}
 .rlist-sheet .rgrid td small{font-size:11px}
 .rg-cur{outline:2px solid var(--button);outline-offset:-2px}
 .rg-cur a{background:#eaf2ff}
+
+.waku-chip.sm{width:28px;height:28px;font-size:14px;border-radius:7px;align-self:center}
+.mark-item{align-items:flex-start}
+.mark-item .waku-chip.sm{margin-top:2px}
