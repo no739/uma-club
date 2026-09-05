@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>ラボ | 馬CLUB</title><link rel="stylesheet" href="style.css?v=1214315a"></head><body><header class="nav"><div><a class="brand" href="index.html">馬CLUB</a><nav><a class="" href="index.html">ホーム</a><a class="" href="stats.html">成績</a></nav></div></header><main class="lab">
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>ラボ | 馬CLUB</title><link rel="stylesheet" href="style.css?v=fe3031bb"></head><body><header class="nav"><div><a class="brand" href="index.html">馬CLUB</a><nav><a class="" href="index.html">ホーム</a><a class="" href="stats.html">成績</a></nav></div></header><main class="lab">
 <h1>ラボ</h1>
 <p class="lab-lead">過去10年・JRA全レース(32,000超)を自由に集計できます。条件を選んで「集計する」を押してください。</p>
 <div class="lab-presets" id="presets"></div>
@@ -100,6 +100,8 @@ el('go').onclick=run;
   body.innerHTML='';
   var f=document.createElement('iframe');
   f.className='wv-frame';f.title='外部ページ';f.setAttribute('src',u);
+  body.dataset.ok='';
+  f.onload=function(){body.dataset.ok='1'};   // 読み込めたら案内を出さない
   body.appendChild(f);
  }
  window.wvClose=function(){
@@ -118,6 +120,16 @@ el('go').onclick=run;
   if(new URL(u,location.href).host===location.host)return;
   e.preventDefault();
   mount(u);wv.hidden=false;open=true;document.body.style.overflow='hidden';
+  // 読み込めない時に真っ白のままにしない(netkeiba側の制限や障害への保険)
+  clearTimeout(window.__wvT);
+  window.__wvT=setTimeout(function(){
+    var b=wv.querySelector('.wv-body'); if(!b||!open)return;
+    if(b.dataset.ok==='1')return;
+    b.insertAdjacentHTML('beforeend','<div class="wv-fallback">'+
+      '<p>ページを読み込めませんでした。</p>'+
+      '<p class="sub">netkeiba側の一時的な制限の可能性があります。少し時間をおくか、下から直接開いてください。</p>'+
+      '<a class="button" target="_blank" rel="noopener" href="'+u+'">netkeibaで開く</a></div>');
+  },3500);
   // 戻る連打でも離脱しないよう履歴に余裕を持たせる
   for(var k=0;k<3;k++)history.pushState({wv:1},'','#view');
  });
@@ -127,7 +139,7 @@ el('go').onclick=run;
   if(open){history.pushState({wv:1},'','#view');history.pushState({wv:1},'','#view');}
  });
  fetch("version.json",{cache:"no-store"}).then(function(r){return r.json()}).then(function(v){
-  if(v.build!=="20260905174721" && !sessionStorage.getItem("rl_"+v.build)){
+  if(v.build!=="20260905181045" && !sessionStorage.getItem("rl_"+v.build)){
    sessionStorage.setItem("rl_"+v.build,"1");location.reload();}
  }).catch(function(){});
 })();
