@@ -188,3 +188,4 @@ to{transform:translateY(0)}}
 .rlist-sheet{position:fixed;inset:0;z-index:60;background:#fff;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 14px 48px;animation:wvFade .18s ease}
 .rlist-head{position:sticky;top:0;background:#fff;padding:6px 0 10px;z-index:1;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:16px}
 .rlist-close{border:0;background:var(--tile);border-radius:999px;width:34px;height:34px;cursor:pointer;font-size:15px}
+.bet-adj{display:block;font-size:11px;color:#b06a1e;font-weight:500}
