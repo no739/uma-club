@@ -67,7 +67,7 @@ a.rnav-btn:hover{text-decoration:none;background:#e8e8ed}
 .amt-plus{color:var(--plus);font-style:normal}.amt-minus{color:var(--minus);font-style:normal}
 .pill.hit{background:#eaf7ee}.pill.miss{background:#f2f2f4}
 .pill b,.pill i{font-weight:600}
-.result.hit{background:#eaf7ee}.result.miss{background:#f7f7f9}.rs-io{display:block;margin-top:6px;color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}.rs-amt{text-align:right;flex:none}.rs-amt small{display:block;color:var(--muted);font-size:11px;margin-top:-4px}
+.sum-block{background:var(--tile);border-radius:12px;padding:12px 14px;margin:10px 0}.sum-block h4{margin:0 0 4px;font-size:13px;color:var(--blue)}.sum-block p{margin:0;font-size:14.5px;line-height:1.7}.pred-summary{font-size:14.5px;line-height:1.7}.result.hit{background:#eaf7ee}.result.miss{background:#f7f7f9}.rs-io{display:block;margin-top:6px;color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}.rs-amt{text-align:right;flex:none}.rs-amt small{display:block;color:var(--muted);font-size:11px;margin-top:-4px}
 .race-ctrl{flex-wrap:nowrap;overflow-x:auto;gap:6px;padding:8px 14px;background:var(--tile)}
 .race-ctrl .ctrl-chip{background:#fff;white-space:nowrap;padding:8px 12px;font-size:13px;flex:none}
 .race-ctrl .listbtn{width:38px;padding:8px 0;text-align:center;font-size:15px}
