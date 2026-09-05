@@ -1,0 +1,134 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>ラボ | 馬CLUB</title><link rel="stylesheet" href="style.css?v=4a72e61b"></head><body><header class="nav"><div><a class="brand" href="index.html">馬CLUB</a><nav><a class="" href="index.html">ホーム</a><a class="" href="archive.html">アーカイブ</a><a class="" href="stats.html">成績</a><a class="on" href="lab.html">ラボ</a></nav></div></header><main class="lab">
+<h1>ラボ</h1>
+<p class="lab-lead">過去10年・JRA全レース(32,000超)を自由に集計できます。条件を選んで「集計する」を押してください。</p>
+<div class="lab-presets" id="presets"></div>
+<div class="lab-form">
+ <label>レース名<input id="f_name" placeholder="例: 有馬記念"></label>
+ <label>競馬場<select id="f_venue"><option value="">すべて</option></select></label>
+ <label>コース<select id="f_surf"><option value="">すべて</option><option>芝</option><option>ダ</option></select></label>
+ <label>距離<span class="rng"><input id="f_dmin" type="number" inputmode="numeric" placeholder="下限"><i>〜</i><input id="f_dmax" type="number" inputmode="numeric" placeholder="上限"></span></label>
+ <label>クラス<select id="f_class"><option value="">すべて</option></select></label>
+ <label>馬場<select id="f_baba"><option value="">すべて</option><option>良</option><option>稍</option><option>重</option><option>不</option></select></label>
+ <label>対象<select id="f_group">
+   <option value="all">全馬</option><option value="n1">1番人気</option><option value="n23">2〜3番人気</option>
+   <option value="n46">4〜6番人気</option><option value="n79">7〜9番人気</option><option value="n10">10番人気以下</option>
+   <option value="w12">内枠(1〜2枠)</option><option value="w78">外枠(7〜8枠)</option></select></label>
+ <label>集計軸<select id="f_by">
+   <option value="none">まとめて1行</option><option value="waku">枠番</option><option value="ninki">人気</option>
+   <option value="jockey">騎手</option><option value="trainer">調教師</option><option value="venue">競馬場</option>
+   <option value="dist">距離</option><option value="class">クラス</option><option value="baba">馬場</option>
+   <option value="year">年</option><option value="month">月</option><option value="race_name">レース名</option></select></label>
+ <label>最低出走数<input id="f_min" type="number" inputmode="numeric" value="0"></label>
+</div>
+<button class="lab-go" id="go">集計する</button>
+<div id="status" class="lab-status">データを読み込み中…</div>
+<div id="out"></div>
+</main>
+<script>
+var LAB=null,LR=[],JK=[],TR=[];
+var PRESETS=[["有馬記念の枠順",{name:"有馬記念",by:"waku"}],
+ ["中山ダ1200の1番人気",{venue:"中山",surf:"ダ",dmin:1200,dmax:1200,group:"n1",by:"none"}],
+ ["新馬戦に強い厩舎",{klass:"新馬",by:"trainer",min:150}],
+ ["重馬場の芝×1番人気",{surf:"芝",baba:"重",group:"n1",by:"none"}],
+ ["東京芝2400の枠順",{venue:"東京",surf:"芝",dmin:2400,dmax:2400,by:"waku"}],
+ ["阪神芝の騎手成績",{venue:"阪神",surf:"芝",by:"jockey",min:100}]];
+function el(id){return document.getElementById(id)}
+fetch('lab_data.json?v=1').then(function(r){return r.json()}).then(function(d){
+  LAB=d;LR=d.races||[];JK=d.jk||[];TR=d.tr||[];
+  var vs=[],cs=[];
+  LR.forEach(function(r){if(vs.indexOf(r[3])<0)vs.push(r[3]);if(cs.indexOf(r[6])<0)cs.push(r[6])});
+  vs.forEach(function(v){el('f_venue').insertAdjacentHTML('beforeend','<option>'+v+'</option>')});
+  cs.forEach(function(c){el('f_class').insertAdjacentHTML('beforeend','<option>'+c+'</option>')});
+  el('status').textContent=LR.length.toLocaleString()+'レース読み込み完了。条件を選んで集計してください。';
+}).catch(function(){el('status').textContent='データの読み込みに失敗しました。通信環境をご確認ください。'});
+PRESETS.forEach(function(p){
+  var b=document.createElement('button');b.className='lab-chip';b.textContent=p[0];
+  b.onclick=function(){var q=p[1];
+    el('f_name').value=q.name||'';el('f_venue').value=q.venue||'';el('f_surf').value=q.surf||'';
+    el('f_dmin').value=q.dmin||'';el('f_dmax').value=q.dmax||'';el('f_class').value=q.klass||'';
+    el('f_baba').value=q.baba||'';el('f_group').value=q.group||'all';el('f_by').value=q.by||'none';
+    el('f_min').value=q.min||0;run()};
+  el('presets').appendChild(b)});
+function rowsOf(r){return r[8].split(';').map(function(s){var a=s.split('|');
+  return{pos:parseInt(a[0])||0,waku:+a[1]||0,uma:+a[2]||0,ninki:+a[3]||0,jk:+a[4],tr:+a[5]}})}
+var GF={all:function(){return true},n1:function(h){return h.ninki===1},
+ n23:function(h){return h.ninki>=2&&h.ninki<=3},n46:function(h){return h.ninki>=4&&h.ninki<=6},
+ n79:function(h){return h.ninki>=7&&h.ninki<=9},n10:function(h){return h.ninki>=10},
+ w12:function(h){return h.waku>=1&&h.waku<=2},w78:function(h){return h.waku>=7&&h.waku<=8}};
+function run(){
+  if(!LR.length){el('status').textContent='まだ読み込み中です…';return}
+  var nm=el('f_name').value.trim(),vn=el('f_venue').value,sf=el('f_surf').value,
+      dmin=+el('f_dmin').value||0,dmax=+el('f_dmax').value||9999,cl=el('f_class').value,
+      bb=el('f_baba').value,g=el('f_group').value,by=el('f_by').value,min=+el('f_min').value||0;
+  var gf=GF[g],map={},keys=[],nrace=0;
+  for(var i=0;i<LR.length;i++){var r=LR[i];
+    if(nm&&r[2].indexOf(nm)<0)continue; if(vn&&r[3]!==vn)continue; if(sf&&r[4]!==sf)continue;
+    if(r[5]<dmin||r[5]>dmax)continue; if(cl&&r[6]!==cl)continue; if(bb&&r[7].indexOf(bb)<0)continue;
+    nrace++;
+    var hs=rowsOf(r);
+    for(var j=0;j<hs.length;j++){var h=hs[j];if(!gf(h))continue;
+      var k;
+      if(by==='waku')k=h.waku;else if(by==='ninki')k=h.ninki;
+      else if(by==='jockey')k=JK[h.jk]||'';else if(by==='trainer')k=TR[h.tr]||'';
+      else if(by==='venue')k=r[3];else if(by==='dist')k=r[5];else if(by==='class')k=r[6];
+      else if(by==='baba')k=r[7];else if(by==='year')k=+r[1].slice(0,4);
+      else if(by==='month')k=+r[1].slice(5,7);else if(by==='race_name')k=r[2];else k='全体';
+      if(k===''||k===0||k==null)continue;
+      if(!map[k]){map[k]={n:0,w:0,t2:0,t3:0};keys.push(k)}
+      var c=map[k];c.n++;if(h.pos===1)c.w++;if(h.pos>=1&&h.pos<=2)c.t2++;if(h.pos>=1&&h.pos<=3)c.t3++}}
+  var rows=keys.map(function(k){var c=map[k];return{k:k,n:c.n,w:c.w,
+    win:c.w/c.n*100,t2:c.t2/c.n*100,t3:c.t3/c.n*100}}).filter(function(x){return x.n>=min});
+  var ord=(by==='waku'||by==='ninki'||by==='dist'||by==='year'||by==='month');
+  rows.sort(ord?function(a,b){return a.k-b.k}:function(a,b){return b.t3-a.t3});
+  if(!rows.length){el('out').innerHTML='<p class="lab-empty">該当データがありません。条件をゆるめてください。</p>';
+    el('status').textContent='対象レース '+nrace+'件';return}
+  var h='<div class="table-wrap"><table><tr><th>区分</th><th>出走</th><th>勝</th><th>勝率</th><th>連対率</th><th>複勝率</th></tr>';
+  rows.slice(0,60).forEach(function(x){h+='<tr><td>'+x.k+'</td><td>'+x.n.toLocaleString()+'</td><td>'+x.w+
+    '</td><td>'+x.win.toFixed(1)+'%</td><td>'+x.t2.toFixed(1)+'%</td><td>'+x.t3.toFixed(1)+'%</td></tr>'});
+  h+='</table></div>';
+  el('out').innerHTML=h;
+  el('status').textContent='対象レース '+nrace.toLocaleString()+'件 / 区分 '+rows.length+'件'+(rows.length>60?'(上位60件を表示)':'');
+}
+el('go').onclick=run;
+</script><footer>予想は自動生成の私的な記録であり、的中を保証するものではありません。馬券の購入は自己責任で。</footer><div id="wv" hidden><div class="wv-back" onclick="wvClose()"></div><div class="wv-sheet"><div class="wv-grab"></div><button class="wv-x" onclick="wvClose()" aria-label="閉じる"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M2 2l11 11M13 2L2 13" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg></button><div class="wv-body"></div></div></div>
+<script>
+(function(){
+ var wv=document.getElementById('wv'),body=wv.querySelector('.wv-body'),open=false;
+ // iframeはDOM挿入前にsrcを入れて生成する。既存iframeにsrcを代入すると
+ // 閲覧履歴が増え、戻る操作でiframeだけ空白になってしまうため。
+ function mount(u){
+  body.innerHTML='';
+  var f=document.createElement('iframe');
+  f.className='wv-frame';f.title='外部ページ';f.setAttribute('src',u);
+  body.appendChild(f);
+ }
+ window.wvClose=function(){
+  if(!open)return;
+  open=false;
+  wv.classList.add('closing');
+  setTimeout(function(){
+   wv.classList.remove('closing');body.innerHTML='';wv.hidden=true;document.body.style.overflow='';
+  },200);
+  if(location.hash==='#view')history.replaceState(null,'',location.pathname+location.search);
+ };
+ document.addEventListener('click',function(e){
+  var a=e.target.closest('a');if(!a)return;
+  if(a.hasAttribute('data-ext'))return;   // 外部アプリで開くリンク(埋め込み不可のもの)は素通し
+  var u=a.getAttribute('href')||'';if(!/^https?:/.test(u))return;
+  if(new URL(u,location.href).host===location.host)return;
+  e.preventDefault();
+  mount(u);wv.hidden=false;open=true;document.body.style.overflow='hidden';
+  // 戻る連打でも離脱しないよう履歴に余裕を持たせる
+  for(var k=0;k<3;k++)history.pushState({wv:1},'','#view');
+ });
+ // ビューア表示中の「戻る」は無効化する(閉じるのは✕か背景タップのみ)。
+ // 履歴を戻し返してサイト離脱を防ぐ。
+ window.addEventListener('popstate',function(){
+  if(open){history.pushState({wv:1},'','#view');history.pushState({wv:1},'','#view');}
+ });
+ fetch("version.json",{cache:"no-store"}).then(function(r){return r.json()}).then(function(v){
+  if(v.build!=="20260905170428" && !sessionStorage.getItem("rl_"+v.build)){
+   sessionStorage.setItem("rl_"+v.build,"1");location.reload();}
+ }).catch(function(){});
+})();
+</script></body></html>
