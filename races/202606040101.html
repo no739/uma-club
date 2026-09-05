@@ -24,7 +24,7 @@
 <div class="h-right"><span class="h-mark"></span><span class="h-odds"><span class="odds-num">11.0</span><small>(5人気)</small><small>462(-2)</small></span></div></div>
 <div class="horse-row"><span class="waku-chip Waku7">7</span>
 <div class="h-main"><a href="https://race.sp.netkeiba.com/modal/horse.html?race_id=202606040101&amp;horse_id=2020102864&amp;i=0&amp;rf=shutuba_modal"><span class="hmark">(地)</span>サングラデーション</a>
-<small>セ6黒鹿 60.0kg · 上野</small><p class="h-note">馬名データ欠損。障害OP2着や未勝利1着など崩れが少なく、軽量で身軽さも武器。</p></div>
+<small>セ6黒鹿 60.0kg · 上野</small><p class="h-note">障害OP2着や未勝利1着など崩れが少なく、軽量で身軽さも武器。</p></div>
 <div class="h-right"><span class="h-mark">○</span><span class="h-odds"><span class="odds-hot">3.7</span><small>(2人気)</small><small>416(0)</small></span></div></div>
 <div class="horse-row"><span class="waku-chip Waku8">8</span>
 <div class="h-main"><a href="https://race.sp.netkeiba.com/modal/horse.html?race_id=202606040101&amp;horse_id=2022100481&amp;i=0&amp;rf=shutuba_modal">アクロスザリバー</a>
@@ -66,7 +66,7 @@
   if(open){history.pushState({wv:1},'','#view');history.pushState({wv:1},'','#view');}
  });
  fetch("../version.json",{cache:"no-store"}).then(function(r){return r.json()}).then(function(v){
-  if(v.build!=="20260905135747" && !sessionStorage.getItem("rl_"+v.build)){
+  if(v.build!=="20260905140006" && !sessionStorage.getItem("rl_"+v.build)){
    sessionStorage.setItem("rl_"+v.build,"1");location.reload();}
  }).catch(function(){});
 })();

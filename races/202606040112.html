@@ -40,7 +40,7 @@
 <div class="h-right"><span class="h-mark"></span><span class="h-odds"><span class="odds-num">25.8</span><small>(7人気)</small></span></div></div>
 <div class="horse-row"><span class="waku-chip Waku7">12</span>
 <div class="h-main"><a href="https://race.sp.netkeiba.com/modal/horse.html?race_id=202606040112&amp;horse_id=2022103911&amp;i=0&amp;rf=shutuba_modal"><span class="hmark">(地)</span>ショウナンタハティ</a>
-<small>牡4鹿 58.0kg · レーン</small><p class="h-note">馬名データ欠損。直近5走で3,3,2,7,2着と安定した中距離力、レーン騎乗で相手に。</p></div>
+<small>牡4鹿 58.0kg · レーン</small><p class="h-note">直近5走で3,3,2,7,2着と安定した中距離力、レーン騎乗で相手に。</p></div>
 <div class="h-right"><span class="h-mark">○</span><span class="h-odds"><span class="odds-hot">6.3</span><small>(4人気)</small></span></div></div>
 <div class="horse-row"><span class="waku-chip Waku8">13</span>
 <div class="h-main"><a href="https://race.sp.netkeiba.com/modal/horse.html?race_id=202606040112&amp;horse_id=2022102681&amp;i=0&amp;rf=shutuba_modal">マイネルブリオン</a>
@@ -86,7 +86,7 @@
   if(open){history.pushState({wv:1},'','#view');history.pushState({wv:1},'','#view');}
  });
  fetch("../version.json",{cache:"no-store"}).then(function(r){return r.json()}).then(function(v){
-  if(v.build!=="20260905135747" && !sessionStorage.getItem("rl_"+v.build)){
+  if(v.build!=="20260905140006" && !sessionStorage.getItem("rl_"+v.build)){
    sessionStorage.setItem("rl_"+v.build,"1");location.reload();}
  }).catch(function(){});
 })();
