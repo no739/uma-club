@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>ラボ | 馬CLUB</title><link rel="stylesheet" href="style.css?v=4a72e61b"></head><body><header class="nav"><div><a class="brand" href="index.html">馬CLUB</a><nav><a class="" href="index.html">ホーム</a><a class="" href="archive.html">アーカイブ</a><a class="" href="stats.html">成績</a></nav></div></header><main class="lab">
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>ラボ | 馬CLUB</title><link rel="stylesheet" href="style.css?v=32dbb7ef"></head><body><header class="nav"><div><a class="brand" href="index.html">馬CLUB</a><nav><a class="" href="index.html">ホーム</a><a class="" href="archive.html">アーカイブ</a><a class="" href="stats.html">成績</a></nav></div></header><main class="lab">
 <h1>ラボ</h1>
 <p class="lab-lead">過去10年・JRA全レース(32,000超)を自由に集計できます。条件を選んで「集計する」を押してください。</p>
 <div class="lab-presets" id="presets"></div>
@@ -127,7 +127,7 @@ el('go').onclick=run;
   if(open){history.pushState({wv:1},'','#view');history.pushState({wv:1},'','#view');}
  });
  fetch("version.json",{cache:"no-store"}).then(function(r){return r.json()}).then(function(v){
-  if(v.build!=="20260905171513" && !sessionStorage.getItem("rl_"+v.build)){
+  if(v.build!=="20260905171751" && !sessionStorage.getItem("rl_"+v.build)){
    sessionStorage.setItem("rl_"+v.build,"1");location.reload();}
  }).catch(function(){});
 })();
