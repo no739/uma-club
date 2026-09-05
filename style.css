@@ -102,10 +102,10 @@ button,input,select,textarea{font-size:16px}
 
 
 to{transform:translateY(0)}}
-.wv-bar{flex:none;height:56px;display:flex;align-items:center;gap:10px;padding:0 14px;background:rgba(249,249,249,.94);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid #d8d8dc}
-.wv-x,.wv-open{flex:none;width:34px;height:34px;border:0;border-radius:999px;background:rgba(118,118,128,.16);color:#3c3c43;font-size:16px;font-weight:600;display:flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none}
-.wv-x:active,.wv-open:active{background:rgba(118,118,128,.28)}
-.wv-host{flex:1;text-align:center;font-size:15px;font-weight:600;color:#1d1d1f;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+
+
+
 .wv-body{flex:1;display:flex;min-height:0;background:#fff}
 .wv-body .wv-frame{flex:1;width:100%;border:0;background:#fff}
 @media(prefers-reduced-motion:reduce){}
@@ -178,3 +178,8 @@ to{transform:translateY(0)}}
 @keyframes wvDown{to{transform:translateY(103%)}}
 @keyframes wvFadeOut{to{opacity:0}}
 @media(prefers-reduced-motion:reduce){.wv-sheet,.wv-back,#wv.closing .wv-sheet{animation:none}}
+
+/* 浮遊する丸✕(iOS風) */
+.wv-x{position:absolute;top:14px;left:14px;z-index:5;width:40px;height:40px;border:0;border-radius:999px;background:rgba(44,44,48,.62);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+.wv-x:active{background:rgba(44,44,48,.85);transform:scale(.94)}
+.wv-grab{z-index:5}
