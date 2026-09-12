@@ -188,6 +188,10 @@ to{transform:translateY(0)}}
 .rlist-sheet{position:fixed;inset:0;z-index:60;background:#fff;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 14px 48px;animation:wvFade .18s ease}
 .rlist-head{position:sticky;top:0;background:#fff;padding:6px 0 10px;z-index:1;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:16px}
 .rlist-close{border:0;background:var(--tile);border-radius:999px;width:34px;height:34px;cursor:pointer;font-size:15px}
+/* 馬場が変わって買い目が差し替わった時の赤い告知 */
+.revbox.swap{border:1px solid var(--minus);background:#fdeef0}
+.revbox.swap .rev-head b{color:var(--minus)}
+.revbox.swap .rev-when{color:var(--minus)}
 /* 週別成績: 週の合計行の下にぶら下がる日別行 */
 .wk-day td{color:var(--muted);font-size:12px}
 .wk-day td:first-child{padding-left:14px}
