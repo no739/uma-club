@@ -303,3 +303,9 @@ th.rs-odds{font-weight:500}.rs-agari{text-align:right;font-variant-numeric:tabul
 .rs-combo{font-weight:600;font-size:15px;white-space:nowrap}.rs-yen{text-align:right;font-weight:600;white-space:nowrap}.rs-rank{text-align:right;font-size:12px;color:var(--muted);white-space:nowrap}
 .rs-hit .rs-combo,.rs-hit .rs-yen{color:var(--plus)}.rs-rank i{font-style:normal;display:inline-block;margin-left:4px;padding:1px 5px;border-radius:4px;background:var(--plus);color:#fff;font-size:10px;vertical-align:middle}
 @media(max-width:620px){.rs-pl{grid-template-columns:1fr auto 62px;gap:6px}.rs-combo{font-size:14px}}
+
+/* 出馬表の枠列(縦長の枠番チップ。2026-09-14) */
+.waku-group{display:flex;align-items:stretch;gap:8px}
+.waku-bar{flex:none;width:18px;margin:7px 0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;border-radius:6px;border:1px solid #d2d2d7;writing-mode:horizontal-tb}
+.waku-rows{flex:1;min-width:0;display:flex;flex-direction:column}
+.waku-group+.waku-group .waku-bar{margin-top:7px}
