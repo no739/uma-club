@@ -67,7 +67,7 @@ main { overflow-x:clip; }
 .motion #orb.settled { transition:none; }
 @media(max-width:640px) {
  .container { width:calc(100% - 40px); }
- .header { padding:16px 20px; gap:16px; } .header nav { gap:20px; } .header .secondary { display:none; }
+ .header { width:100%; padding:16px 20px; gap:16px; } .header nav { gap:20px; } .header .secondary { display:none; }
  .hero { padding-top:calc(26vh + 30vmin + 40px); padding-top:calc(26svh + 30vmin + 40px); padding-bottom:48px; min-height:100vh; min-height:100svh; }
  #orb { width:100vw; height:100vh; height:100svh; top:0; left:-20px; right:auto; transform-origin:50% 26%; }
  .hero-copy { max-width:100%; }
