@@ -146,10 +146,12 @@
     const beat=reduced.matches?0:.05*Math.max(pulse(time%4.5),pulse(time%4.5-.9));
     const breath=reduced.matches?0:.03*Math.sin(time*2*Math.PI/6);
     const radius=Math.min(width,height)*lerp(mobile?.30:.28,.26,end)*(1+beat+breath);
+    // ゆっくり形が変わる(生き物の呼吸): 低い周波数だけ・振幅 10%・周期 9〜14 秒。とげは出ない
+    const slow=time*2*Math.PI;
     const sx=width*lerp(mobile?.5:.70,mobile?.5:.62,end);
     const sy=height*lerp(mobile?.26:.50,mobile?.60:.55,end);
-    const horseWidth=width*(mobile?1.08:.62),horseHeight=horseWidth*2/3;
-    const runX=width*(mobile?.5:.60)+width*lerp(-.08,.08,clamp((progress-.24)/.48));
+    const horseWidth=width*(mobile?.96:.62),horseHeight=horseWidth*2/3;
+    const runX=width*(mobile?.5:.60)+width*lerp(-.03,.03,clamp((progress-.24)/.48));
     const ground=height*(mobile?.60:.70);
     // 1周 = 13.5 単位(通常区間 1、コマ11→0 は 2.5)
     const units=(reduced.matches?0:runTime%1)*13.5,k=Math.min(11,Math.floor(units)),f=k===11?(units-11)/2.5:units-k;
@@ -162,7 +164,9 @@
       const a=angle*(.55+.45*(1-Math.abs(point.y)));
       const rx=point.x*Math.cos(a)+point.z*Math.sin(a),rz=point.z*Math.cos(a)-point.x*Math.sin(a);
       const ry=point.y*Math.cos(tilt)-rz*Math.sin(tilt),depth=point.y*Math.sin(tilt)+rz*Math.cos(tilt);
-      let x=sx+rx*radius,y=sy+ry*radius;
+      const shape=reduced.matches?0:.10*(Math.sin(1.0*point.theta+slow/11)*Math.cos(point.phi*1.5-slow/9)*.7+Math.sin(2*point.phi+slow/14+point.theta*.5)*.3);
+      const rr=radius*(1+shape);
+      let x=sx+rx*rr,y=sy+ry*rr;
       const dx=x-pointer.x,dy=y-pointer.y,dist=Math.hypot(dx,dy);
       const push=!reduced.matches&&dist<90?16*(1-dist/90):0;
       point.pushX+=((dist>0?dx/dist*push:0)-point.pushX)*.08;
@@ -188,9 +192,9 @@
       const front=clamp((depth+1)/2);
       // 走行中、速く移動している粒子(脚)は薄くする(空中を横切る点を目立たせない。点滅はしない)
       const speed=Number.isFinite(oldX)?Math.hypot(x-oldX,y-oldY):0;
-      const calm=e>0?1/(1+Math.max(0,speed-2)/5):1;
-      const alpha=lerp(Math.min(.85,.15+.7*front+.35*wave+.25*twinkle),.40*calm,e);
-      const size=lerp((1.6+1.4*front)*(1+.4*wave),2.2+.4*(1-Math.abs(point.y)),e)*dotScale;
+      const calm=e>0?1/(1+Math.max(0,speed-3)/9):1;
+      const alpha=lerp(Math.min(.85,.15+.7*front+.35*wave+.25*twinkle),.55*calm,e);
+      const size=lerp((1.6+1.4*front)*(1+.4*wave),2.5+.4*(1-Math.abs(point.y)),e)*dotScale;
       return {x,y,alpha,size,color:depth<-.3?2:Math.abs(depth)<.3?1:0};
     });
     for(const p of projected) dot(p.x,p.y,p.size,p.alpha,p.color);
