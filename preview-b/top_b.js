@@ -181,7 +181,9 @@
       if(run) {
         const slot=reduced.matches?i:slots[i];
         const hx=horseCoord(slot,k,f,0),hy=horseCoord(slot,k,f,1);
-        const targetX=runX+(hx-.5)*horseWidth,targetY=ground+(hy-1)*horseHeight;
+        // 胴の粒子も止めない: 歩幅に合わせた小さな波(筋肉のうねり)。振幅は画面幅の 0.35%
+        const ph=(reduced.matches?0:runTime)*2*Math.PI,amp=horseWidth*.0035;
+        const targetX=runX+(hx-.5)*horseWidth+amp*Math.sin(ph+hx*9+hy*3),targetY=ground+(hy-1)*horseHeight+amp*.8*Math.cos(ph*1.0+hx*7-hy*4);
         const follow=!transitioning&&!reduced.matches&&Number.isFinite(point.horseX)?.45:1;
         const oldHorseX=point.horseX??targetX,oldHorseY=point.horseY??targetY;
         point.horseX=oldHorseX+(targetX-oldHorseX)*follow;
