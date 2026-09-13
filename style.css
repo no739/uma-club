@@ -15,7 +15,7 @@ a.rnav-btn:hover{text-decoration:none;background:#e8e8ed}
 .race-head2 p{margin:3px 0 0;color:var(--muted);font-size:13.5px}
 .gbadge{display:inline-block;background:var(--button);color:#fff;font-size:12px;font-weight:700;border-radius:6px;padding:2px 8px;margin-right:8px;vertical-align:middle}
 .race-main{padding-top:8px}
-.segbar{display:flex;background:var(--tile);border-radius:12px;padding:3px;gap:2px;margin:10px 0 4px;position:sticky;top:48px;z-index:1}
+.segbar{display:flex;background:var(--tile);border-radius:12px;padding:3px;gap:2px;margin:10px 0 4px;position:sticky;top:66px;z-index:1}
 .seg{flex:1;border:0;background:transparent;font:inherit;font-size:14px;font-weight:600;color:var(--muted);padding:9px 0;border-radius:10px;cursor:pointer}
 .seg.on{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.12)}
 .pane>section{margin-top:14px}
@@ -222,3 +222,12 @@ to{transform:translateY(0)}}
 .horse-row.v2 .h-odds small{display:inline;margin-left:2px;font-size:10.5px}
 .horse-row.v2 .h-score{margin-top:2px}
 .h-bw{font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+
+/* --- トップページと同じ白いヘッダー(トップ/レース/成績) --- */
+.site-header{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:12px 20px;background:rgba(255,255,255,.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(51,51,51,.12)}
+.site-header .brand{color:#333333;font-size:22px;font-weight:600;white-space:nowrap;text-decoration:none}
+.site-header nav{display:flex;gap:20px}
+.site-header nav a{color:#333333;font-size:15px;padding:8px 0;border-bottom:2px solid transparent;text-decoration:none}
+.site-header nav a.on{border-bottom-color:#096fc8}
+.site-header nav a:hover{text-decoration:none}
+@media(min-width:1024px){.site-header{padding:16px max(48px,calc((100vw - 1200px)/2))}.site-header nav{gap:32px}}
