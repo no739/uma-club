@@ -84,7 +84,8 @@
       const view=new DataView(bytes.buffer),coords=new Uint16Array(data.frames*data.n*2);
       for(let i=0;i<coords.length;i++) coords[i]=view.getUint16(i*2,true);
       const inverse=new Uint16Array(data.n);data.perm.forEach((v,i)=>inverse[v]=i);
-      return {...data,coords,inverse};
+      const primary=Number.isInteger(data.primary)&&data.primary>0&&data.primary<=data.n?data.primary:0;
+      return {...data,coords,inverse,primary};
     } catch { return null; }
   }
   const run=decodeRun(window.HORSE_RUN);
@@ -199,8 +200,10 @@
       // 走行中、速く移動している粒子(脚)は薄くする(空中を横切る点を目立たせない。点滅はしない)
       const speed=Number.isFinite(oldX)?Math.hypot(x-oldX,y-oldY):0;
       const calm=e>0?1/(1+Math.max(0,speed-3)/9):1;
-      const alpha=lerp(Math.min(.85,.15+.7*front+.35*wave+.25*twinkle),.55*calm,e);
-      const size=lerp((1.6+1.4*front)*(1+.4*wave),2.5+.4*(1-Math.abs(point.y)),e)*dotScale;
+      // 球体と同じ間隔で馬を描くため、primary 以降の粒子は馬になる過程で溶けて消える(座標は一次粒子に重なる)
+      const shown=run&&run.primary&&i>=run.primary?1-e:1;
+      const alpha=lerp(Math.min(.85,.15+.7*front+.35*wave+.25*twinkle),.55*calm,e)*shown;
+      const size=lerp((1.6+1.4*front)*(1+.4*wave),2.7,e)*dotScale;
       point.alpha=alpha;
       return {x,y,alpha,size,color:depth<-.3?2:Math.abs(depth)<.3?1:0};
     });
