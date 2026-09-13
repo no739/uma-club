@@ -12,9 +12,9 @@ h2 { font-size:24px; margin-bottom:16px; } h3 { font-size:20px; }
 .header.scrolled { background:rgba(255,255,255,.85); backdrop-filter:blur(12px); border-color:var(--line); }
 .brand { color:var(--ink); font-size:24px; font-weight:600; white-space:nowrap; }
 .brand { display:flex; align-items:center; }
-.brand img { height:34px; width:auto; display:block; }
+.brand img { height:44px; width:auto; display:block; }
 .footer-band .brand img { height:30px; }
-@media (max-width:620px) { .brand img { height:28px; } }
+@media (max-width:620px) { .brand img { height:38px; } }
 nav { display:flex; gap:32px; } nav a { color:var(--ink); font-size:15px; }
 .header nav a { padding-block:8px; border-bottom:2px solid rgba(51,51,51,0); }
 .header nav a[aria-current] { border-color:var(--blue); }

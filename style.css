@@ -226,7 +226,7 @@ to{transform:translateY(0)}}
 /* --- トップページと同じ白いヘッダー(トップ/レース/成績) --- */
 .site-header{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:12px 20px;background:rgba(255,255,255,.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(51,51,51,.12)}
 .site-header .brand{color:#333333;font-size:22px;font-weight:600;white-space:nowrap;text-decoration:none}
-.site-header .brand{display:flex;align-items:center}.site-header .brand img{height:30px;width:auto;display:block}@media(max-width:620px){.site-header .brand img{height:26px}}
+.site-header .brand{display:flex;align-items:center}.site-header .brand img{height:40px;width:auto;display:block}@media(max-width:620px){.site-header .brand img{height:38px}}
 .site-header nav{display:flex;gap:20px}
 .site-header nav a{color:#333333;font-size:15px;padding:8px 0;border-bottom:2px solid transparent;text-decoration:none}
 .site-header nav a.on{border-bottom-color:#096fc8}
