@@ -7,7 +7,7 @@
   const ctx = canvas.getContext('2d');
   const counters = [...document.querySelectorAll('[data-count]')];
   const active = new Map(), completed = new Set(), timers = new Set(), plans = new Map();
-  let width=0, height=0, points=[],  raf=0, previous=0, elapsed=0, lastY=scrollY, progress=0, rotation=0; 
+  let width=0, height=0, points=[],  raf=0, previous=0, elapsed=0, lastY=scrollY, progress=0; 
   const format = (el,n) => n.toLocaleString('en-US',{minimumFractionDigits:(el.dataset.count.split('.')[1]||'').length,maximumFractionDigits:(el.dataset.count.split('.')[1]||'').length,useGrouping:el.dataset.format==='comma'});
   const finish = el => {el.textContent=format(el,Number(el.dataset.count));completed.add(el);active.delete(el);};
   const later = (fn,ms) => { const id=setTimeout(()=>{timers.delete(id);fn();},ms);timers.add(id); };
@@ -73,137 +73,182 @@
       watch(el,()=>{enter(item,i*150);enter(arrow,i*150+900);});
     });
   });
-  const horse = window.HORSE_POINTS;
-  // Decode once; invalid data leaves the B3 E-horse animation available.
+  // Validate the entire frame-major Uint16 LE payload and permutation once.
   function decodeRun(data) {
     try {
       if(!data || data.w!==300 || data.h!==200 || data.n!==2400 || data.frames!==12 ||
         !Array.isArray(data.perm) || data.perm.length!==2400 ||
         data.perm.some(i=>!Number.isInteger(i)||i<0||i>=2400) || new Set(data.perm).size!==2400) return null;
       const bytes=Uint8Array.from(atob(data.b64),c=>c.charCodeAt(0));
-      if(bytes.length!==12*2400*2*2) return null;
-      const coords=new Uint16Array(bytes.buffer);
-      if(new Uint8Array(new Uint16Array([1]).buffer)[0]!==1) {
-        const view=new DataView(bytes.buffer);
-        for(let i=0;i<coords.length;i++) coords[i]=view.getUint16(i*2,true);
-      }
-      return {...data,coords};
+      if(bytes.length!==12*2400*4) return null;
+      const view=new DataView(bytes.buffer),coords=new Uint16Array(12*2400*2);
+      for(let i=0;i<coords.length;i++) coords[i]=view.getUint16(i*2,true);
+      const inverse=new Uint16Array(2400);data.perm.forEach((v,i)=>inverse[v]=i);
+      return {...data,coords,inverse};
     } catch { return null; }
   }
   const run=decodeRun(window.HORSE_RUN);
   const slots=Uint16Array.from({length:2400},(_,i)=>i);
-  let runTime=0, dustBudget=0, dustCursor=0;
-  const dust=Array.from({length:120},()=>({life:0,x:0,y:0}));
-  const scrollSamples=[];
+  const clamp=n=>Math.max(0,Math.min(1,n));
+  const lerp=(a,b,t)=>a+(b-a)*t;
+  const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+  const pointer={x:Infinity,y:Infinity};
+  const scrollSamples=[],costs=[];
+  let runTime=0,dustBudget=0,dustCursor=0,sphereTime=0,lineQuality=1,sprites=[],lineTexture,lineContext,linePixels;
+  const dust=Array.from({length:48},()=>({life:0,x:0,y:0}));
+  const entering=()=>clamp((progress-.10)/.14);
+  const leaving=()=>clamp((progress-.72)/.14);
+  function morph() {return run?entering()*(1-leaving()):0;}
   function advanceRun(delta,now) {
     while(scrollSamples.length && scrollSamples[0].time<=now-300) scrollSamples.shift();
     const speed=scrollSamples.reduce((sum,s)=>sum+s.distance,0)/.3;
-    if(!run || progress<.30 || progress>=.80) return;
-    const step=delta/900*(1+1.2*Math.min(speed/2000,1));
+    if(!run || progress<=.184 || progress>=.86) return;
+    const step=delta/900*(1+1.2*Math.min(speed/2000,1))*ease(clamp((entering()-.6)/.4));
     const cycles=Math.floor(runTime+step)-Math.floor(runTime);
     for(let c=0;c<cycles;c++) for(let i=0;i<slots.length;i++) slots[i]=run.perm[slots[i]];
-    runTime+=step;dustBudget=Math.min(4,dustBudget+step*40);
+    runTime+=step;dustBudget=Math.min(4,dustBudget+step*24);
   }
-  const clamp = n => Math.max(0,Math.min(1,n));
-  const lerp = (a,b,t) => a+(b-a)*t;
-  const ease = t => t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
-  const pointer={x:0,y:0,tx:0,ty:0};
-  function morph() {
-    if(!horse || !Array.isArray(horse.pts)) return 0;
-    if(reduced.matches && !run) return progress>=.22&&progress<.78?1:0;
-    if(progress<.10) return 0;
-    if(progress<.22) return ease(clamp((progress-.10)/.12));
-    const exit=run?.80:.78;
-    if(progress<=exit) return 1;
-    return 1-ease(clamp((progress-exit)/(.90-exit)));
+  // At the seam remap the adjacent control points as well as the linear 11→0 pair.
+  function sample(slot,frame,axis) {
+    if(frame<0) {frame+=12;slot=run.inverse[slot];}
+    if(frame>=12) {frame-=12;slot=run.perm[slot];}
+    return run.coords[(frame*2400+slot)*2+axis]/65535;
+  }
+  function catmullRom(a,b,c,d,t) {
+    return b+.5*t*(c-a+t*(2*a-5*b+4*c-d+t*(3*(b-c)+d-a)));
+  }
+  function horseCoord(slot,k,f,axis) {
+    const b=sample(slot,k,axis),c=sample(slot,k+1,axis);
+    return k===11?lerp(b,c,f):catmullRom(sample(slot,k-1,axis),b,c,sample(slot,k+2,axis),f);
+  }
+  function makeSprites(dpr) {
+    sprites=['9,111,200','120,190,255','3,60,120','107,111,115'].map(rgb=>
+      [2,2.6,3.2].map(size=>{
+        const sprite=document.createElement('canvas');
+        sprite.width=sprite.height=Math.ceil(size*dpr);
+        const c=sprite.getContext('2d'),r=sprite.width/2;
+        const fade=c.createRadialGradient(r,r,0,r,r,r);
+        fade.addColorStop(0,`rgba(${rgb},1)`);fade.addColorStop(1,`rgba(${rgb},0)`);
+        c.fillStyle=fade;c.beginPath();c.arc(r,r,r,0,Math.PI*2);c.fill();return sprite;
+      }));
+  }
+  function dot(x,y,size,alpha,color=0) {
+    ctx.globalAlpha=alpha;
+    ctx.drawImage(sprites[color][size<=2?0:size<=2.6?1:2],x-size/2,y-size/2,size,size);
   }
   function draw() {
-    if (!ctx || document.hidden) return;
+    if(!ctx || document.hidden) return;
+    const began=performance.now();
     ctx.clearRect(0,0,width,height);
-    const exit=run?.80:.78;
-    const mobile=innerWidth<640, t=morph(), returning=progress>exit;
-    const end=ease(clamp((progress-exit)/(.90-exit)));
-    const angle=reduced.matches?0:rotation, tilt=12*Math.PI/180;
-    const time=reduced.matches?0:elapsed/1000;
-    const radius=Math.min(width,height)*lerp(mobile?.30:.24,.22,end)*(1+.018*Math.sin(time*2));
-    const sx=width*(mobile?.5:.70), sy=height*lerp(mobile?.26:.5,.70,end);
-    const horseWidth=width*(mobile?1.08:.62), horseHeight=horseWidth*(horse?horse.h/horse.w:2682/5000);
-    const stride=Math.sin(time*2*Math.PI/.9), lean=stride*1.5*Math.PI/180;
-    const travel=lerp(-.06,.06,clamp((progress-.22)/.56))*width;
-    const hx=width*(mobile?.5:.60)+travel+(reduced.matches?0:pointer.x);
-    const hy=height*(mobile?.42:.52)+stride*height*.015+(reduced.matches?0:pointer.y);
-    const blend=run?clamp((progress-.22)/.08):0;
-    const frame=(reduced.matches?0:runTime%1)*12, k=Math.floor(frame), fraction=frame-k;
-    const runHeight=horseWidth*2/3;
-    const runX=width*(mobile?.5:.60)+width*lerp(-.08,.08,clamp((progress-.30)/.50))+
-      (reduced.matches?0:width*.012*Math.sin(frame/12*Math.PI*2))+(reduced.matches?0:pointer.x);
-    // Both frames share a width and bottom (ground), with no extra vertical bob.
-    const ground=height*(mobile?.42:.52)+horseHeight/2+(reduced.matches?0:pointer.y);
+    const mobile=width<640,entry=entering(),exit=leaving();
+    const transitioning=run&&((progress>.10&&progress<.24)||(progress>.72&&progress<.86));
+    const end=ease(exit),angle=reduced.matches?0:sphereTime*2*Math.PI/40;
+    const time=reduced.matches?0:sphereTime,tilt=reduced.matches?0:Math.sin(time*2*Math.PI/9)*Math.PI/15;
+    const radius=Math.min(width,height)*lerp(mobile?.30:.28,.26,end);
+    const sx=width*lerp(mobile?.5:.70,mobile?.5:.62,end);
+    const sy=height*lerp(mobile?.26:.50,mobile?.60:.55,end);
+    const horseWidth=width*(mobile?1.08:.62),horseHeight=horseWidth*2/3;
+    const runX=width*(mobile?.5:.60)+width*lerp(-.08,.08,clamp((progress-.24)/.48));
+    const ground=height*(mobile?.60:.70);
+    const frame=(reduced.matches?0:runTime%1)*12,k=Math.floor(frame),f=frame-k;
     const projected=points.map((point,i)=>{
-      const {x,y,z,hx:horseX,hy:horseY,hz,size,delay,phase}=point;
-      const rx=x*Math.cos(angle)+z*Math.sin(angle), rz=z*Math.cos(angle)-x*Math.sin(angle);
-      const ry=y*Math.cos(tilt)-rz*Math.sin(tilt), depth=y*Math.sin(tilt)+rz*Math.cos(tilt);
-      const e=reduced.matches?t:(returning?1-clamp(((1-t)-delay)/.65):clamp((t-delay)/.65));
-      const px=(horseX-.5)*horseWidth, py=(horseY-.5)*horseHeight;
-      const jitter=reduced.matches?0:.8;
-      let targetX=hx+px*Math.cos(lean)-py*Math.sin(lean)+Math.sin(time*9+phase)*jitter;
-      let targetY=hy+px*Math.sin(lean)+py*Math.cos(lean)+Math.cos(time*11+phase)*jitter;
-      let dx=0,dy=0,hoof=false;
-      if(run && progress>=.22) {
-        const mix=ease(clamp((blend-delay*(.3/.35))/.7));
-        const slot=reduced.matches||progress<.30?i:slots[i];
-        const a=((progress<.30?0:k)*2400+slot)*2;
-        const next=k===11?run.perm[slot]:slot;
-        const b=(((k+1)%12)*2400+next)*2;
-        const f=progress<.30?0:fraction;
-        const x=run.coords[a]/65535,y=run.coords[a+1]/65535;
-        dx=(run.coords[b]/65535-x)*horseWidth;
-        dy=(run.coords[b+1]/65535-y)*runHeight;
-        // Fade the original pose's lean/bob to the aligned E frame, preserving p<.22 exactly.
-        const alignedX=width*(mobile?.5:.60)-width*.06+px+(reduced.matches?0:pointer.x);
-        const alignedY=ground+(horseY-1)*horseHeight;
-        targetX=lerp(lerp(targetX,alignedX,blend),runX+(x-.5)*horseWidth+dx*f,mix);
-        targetY=lerp(lerp(targetY,alignedY,blend),ground+(y-1)*runHeight+dy*f,mix);
-        hoof=y>=.92;
+      const e=run?ease(clamp((entry-point.delay)/.65))*(1-ease(clamp((exit-point.delay)/.65))):0;
+      const {theta,phi}=point;
+      const noise=(Math.sin(2*theta+.7*time)*Math.cos(3*phi-.5*time)+.5*Math.sin(5*theta-1.1*time+phi)+.25*Math.sin(9*phi+1.9*time))/1.75;
+      const wave=reduced.matches?0:Math.max(0,1-Math.abs(phi-(time%3.2)/3.2*(Math.PI+.7)+.35)/.175);
+      const r=radius*(1+.07*noise+.04*wave);
+      const rx=point.x*Math.cos(angle)+point.z*Math.sin(angle),rz=point.z*Math.cos(angle)-point.x*Math.sin(angle);
+      const ry=point.y*Math.cos(tilt)-rz*Math.sin(tilt),depth=point.y*Math.sin(tilt)+rz*Math.cos(tilt);
+      let x=sx+rx*r,y=sy+ry*r;
+      const dx=x-pointer.x,dy=y-pointer.y,dist=Math.hypot(dx,dy);
+      const push=!reduced.matches&&dist<70?10*(1-dist/70):0;
+      point.pushX+=((dist>0?dx/dist*push:0)-point.pushX)*.08;
+      point.pushY+=((dist>0?dy/dist*push:0)-point.pushY)*.08;
+      // Infinity denotes an absent pointer; never multiply Infinity by zero.
+      if(!Number.isFinite(point.pushX)) point.pushX=0;
+      if(!Number.isFinite(point.pushY)) point.pushY=0;
+      x+=point.pushX*(1-e);y+=point.pushY*(1-e);
+      let hoof=false;
+      if(run) {
+        const slot=reduced.matches?i:slots[i];
+        const hx=horseCoord(slot,k,f,0),hy=horseCoord(slot,k,f,1);
+        const targetX=runX+(hx-.5)*horseWidth,targetY=ground+(hy-1)*horseHeight;
+        // Keep the live gallop source continuous when direct morph placement starts.
+        const follow=!reduced.matches&&Number.isFinite(point.horseX)?.45:1;
+        const oldHorseX=point.horseX??targetX,oldHorseY=point.horseY??targetY;
+        const moveX=(targetX-oldHorseX)*follow,moveY=(targetY-oldHorseY)*follow;
+        // Bound rare large seam assignments so a permutation cannot flash across the screen.
+        const bound=reduced.matches?1:Math.min(1,16/(Math.hypot(moveX,moveY)||1));
+        point.horseX=oldHorseX+moveX*bound;point.horseY=oldHorseY+moveY*bound;
+        x=lerp(x,point.horseX,e);y=lerp(y,point.horseY,e);hoof=hy>.90;
       }
-      return {x:lerp(sx+rx*radius,targetX,e),y:lerp(sy+ry*radius,targetY,e),
-        z:lerp(depth,hz,e),e,size,depth,dx,dy,hoof};
-    }).sort((a,b)=>a.z-b.z);
-    const running=run && progress>=.30 && progress<.80 && !reduced.matches;
-    ctx.beginPath();ctx.lineWidth=1;
+      const oldX=point.posX,oldY=point.posY;
+      if(!transitioning&&e===0&&!reduced.matches&&Number.isFinite(oldX)) {x=lerp(oldX,x,.45);y=lerp(oldY,y,.45);}
+      point.posX=x;point.posY=y;
+      const twinkleSlot=(i+point.twinkleOffset)%points.length;
+      const twinkle=!reduced.matches&&twinkleSlot<Math.floor(points.length*.03)?Math.sin(Math.PI*(time% .8)/.8):0;
+      const front=clamp((depth+1)/2),alpha=lerp(Math.min(.85,.15+.7*front+.3*wave+.25*twinkle),.40,e);
+      const size=lerp(Math.min(3,1.6+1.4*front+.2*wave),2+.6*(1-Math.abs(point.y)),e);
+      return {x,y,z:depth,e,alpha,size,hoof,dx:Number.isFinite(oldX)?x-oldX:0,dy:Number.isFinite(oldY)?y-oldY:0,color:depth<-.3?2:Math.abs(depth)<.3?1:0};
+    });
+    // A 14px spatial hash limits neighbour search; one combined neural stroke.
+    if(!reduced.matches&&morph()<1) {
+      const grid=new Map(),limit=Math.floor((mobile?400:700)*lineQuality);let lines=0;
+      ctx.beginPath();ctx.lineWidth=.6;linePixels.data.fill(0);
+      for(const p of projected) {
+        if(p.z<=.15||p.e>=1) continue;
+        const gx=Math.floor(p.x/14),gy=Math.floor(p.y/14);
+        for(let a=-1;a<=1&&lines<limit;a++) for(let b=-1;b<=1&&lines<limit;b++) {
+          for(const q of grid.get(`${gx+a},${gy+b}`)||[]) {
+            const distance=Math.hypot(p.x-q.x,p.y-q.y);
+            if(distance<=14&&lines<limit) {
+              const alpha=lerp(.14,.06,distance/14)*(1-Math.max(p.e,q.e));
+              // An alpha texture gives each subpath its own opacity in one stroke.
+              const steps=Math.max(1,Math.ceil(distance*2));
+              for(let step=0;step<=steps;step++) {
+                const x=Math.round(lerp(p.x,q.x,step/steps)),y=Math.round(lerp(p.y,q.y,step/steps));
+                for(let ox=-1;ox<=1;ox++) for(let oy=-1;oy<=1;oy++) {
+                  if(x+ox<0||x+ox>=lineTexture.width||y+oy<0||y+oy>=lineTexture.height) continue;
+                  const index=((y+oy)*lineTexture.width+x+ox)*4;
+                  linePixels.data[index]=9;linePixels.data[index+1]=111;linePixels.data[index+2]=200;
+                  linePixels.data[index+3]=Math.max(linePixels.data[index+3],Math.round(alpha*255));
+                }
+              }
+              ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);lines++;
+            }
+          }
+        }
+        const key=`${gx},${gy}`;if(!grid.has(key)) grid.set(key,[]);grid.get(key).push(p);
+      }
+      lineContext.putImageData(linePixels,0,0);
+      ctx.globalAlpha=1;ctx.strokeStyle=ctx.createPattern(lineTexture,'no-repeat');ctx.stroke();
+    }
     for(const p of projected) {
-      const depth=clamp((p.depth+1)/2), edge=1-Math.abs(p.depth);
-      const base=[9,111,200], light=[120,190,255], dark=[3,60,120];
-      const shade=p.depth<0?dark:base;
-      const horseColor=p.size<.5?light.map((v,i)=>lerp(v,base[i],p.size*2)):base.map((v,i)=>lerp(v,dark[i],(p.size-.5)*2));
-      const rgb=shade.map((v,i)=>Math.round(lerp(lerp(v,light[i],edge),horseColor[i],p.e)));
-      const alpha=Math.min(lerp(.55,.40,p.e),lerp(.12+.78*depth,.35+.55*clamp((p.z+.06)/.12),p.e));
-      ctx.fillStyle=`rgba(${rgb.join(',')},${alpha})`;
-      const radius=Math.min(lerp(2.8,2.4,p.e),lerp(.6+1.2*depth,1.2+p.size*1.6,p.e));
-      ctx.fillRect(p.x-radius,p.y-radius,radius*2,radius*2);
-      if(running && Math.hypot(p.dx,p.dy)>=1.5) {
-        ctx.moveTo(p.x,p.y);ctx.lineTo(p.x-p.dx*.6,p.y-p.dy*.6);
+      dot(p.x,p.y,p.size,p.alpha,p.color);
+      if(!reduced.matches&&p.e>0&&Math.hypot(p.dx,p.dy)>=2.5) {
+        ctx.globalAlpha=p.alpha*.25*p.e;ctx.strokeStyle='rgb(9,111,200)';ctx.lineWidth=1;
+        ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x-p.dx*.5,p.y-p.dy*.5);ctx.stroke();
       }
-      if(running && p.hoof && dustBudget>=1) {
+      if(!reduced.matches&&p.e>.9&&p.hoof&&dustBudget>=1) {
         const d=dust[dustCursor++%dust.length];d.x=p.x;d.y=p.y;d.life=.5;dustBudget--;
       }
     }
-    // At full horse morph every point is capped at .40, so trails are exactly 35%.
-    ctx.strokeStyle='rgba(9,111,200,.14)';ctx.stroke();
-    if(!reduced.matches) for(const d of dust) if(d.life>0) {
-      ctx.fillStyle=`rgba(107,111,115,${.25*d.life/.5*(1-end)})`;
-      ctx.fillRect(d.x,d.y,1.5,1.5);
-    }
+    if(!reduced.matches) for(const d of dust) if(d.life>0) dot(d.x,d.y,2,.18*d.life/.5*(1-end),3);
+    ctx.globalAlpha=1;
+    costs.push(performance.now()-began);if(costs.length>30) costs.shift();
+    lineQuality=costs.length===30&&costs.reduce((a,b)=>a+b,0)/30>20?.5:1;
   }
   function resize() {
-    width=canvas.clientWidth; height=canvas.clientHeight;
-    const dpr=devicePixelRatio || 1; canvas.width=Math.round(width*dpr); canvas.height=Math.round(height*dpr);
+    width=canvas.clientWidth;height=canvas.clientHeight;
+    const dpr=devicePixelRatio||1;canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);
     if(ctx) ctx.setTransform(dpr,0,0,dpr,0,0);
-    const count=innerWidth<640?1400:2400;
+    makeSprites(dpr);
+    lineTexture=document.createElement('canvas');lineTexture.width=Math.ceil(width);lineTexture.height=Math.ceil(height);
+    lineContext=lineTexture.getContext('2d');linePixels=lineContext.createImageData(lineTexture.width,lineTexture.height);
+    const count=width<640?1400:2400;
     if(points.length!==count) points=Array.from({length:count},(_,i)=>{
-      const y=1-2*(i+.5)/count,r=Math.sqrt(1-y*y),a=i*Math.PI*(3-Math.sqrt(5));
-      const h=horse&&horse.pts&&horse.pts[i]||[.5,.5,0];
-      return {x:Math.cos(a)*r,y,z:Math.sin(a)*r,hx:h[0],hy:h[1],hz:(Math.random()-.5)*.12,size:h[2],delay:Math.random()*.35,phase:Math.random()*Math.PI*2};
+      const y=1-2*(i+.5)/count,r=Math.sqrt(1-y*y),theta=i*Math.PI*(3-Math.sqrt(5));
+      return {x:Math.cos(theta)*r,y,z:Math.sin(theta)*r,theta,phi:Math.acos(y),delay:Math.random()*.35,pushX:0,pushY:0,twinkleOffset:0};
     });
   }
 
@@ -213,8 +258,13 @@
     advanceRun(delta,now);
     for(const d of dust) if(d.life>0) {d.life=Math.max(0,d.life-delta/1000);d.x-=delta*.04;d.y-=delta*.006;}
     for(let i=frameJobs.length-1;i>=0;i--) if(--frameJobs[i].frames<=0) frameJobs.splice(i,1)[0].fn();
-    elapsed+=delta;rotation+=delta/40000*Math.PI*2*(1-morph())*(progress>=.9?.5:1);
-    pointer.x+=(pointer.tx-pointer.x)*.05;pointer.y+=(pointer.ty-pointer.y)*.05;draw();
+    elapsed+=delta;
+    const oldTwinkle=Math.floor(sphereTime/.8);
+    sphereTime+=delta/1000*(1-ease(morph()));
+    if(Math.floor(sphereTime/.8)!==oldTwinkle) {
+      const offset=Math.floor(Math.random()*points.length);for(const p of points) p.twinkleOffset=offset;
+    }
+    draw();
     for(const [el,state] of active) {
       state.elapsed+=delta;const t=Math.min(state.elapsed/1200,1);
       el.textContent=format(el,Number(el.dataset.count)*(1-Math.pow(1-t,3)));
@@ -227,7 +277,7 @@
   function updateScroll() {
     const rect=hero.getBoundingClientRect();
     progress=clamp(scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight));
-    if(run && progress<.30) {runTime=0;dustBudget=0;for(let i=0;i<slots.length;i++) slots[i]=i;}
+    if(run && progress<=.10) {runTime=0;dustBudget=0;for(let i=0;i<slots.length;i++) slots[i]=i;}
     header.classList.toggle('scrolled',scrollY>=80);
     const hide=!reduced.matches&&rect.bottom<=0&&scrollY>lastY;
     if(header.classList.contains('hidden')!==hide) {
@@ -242,14 +292,18 @@
     timers.forEach(clearTimeout);timers.clear();observer.disconnect();plans.clear();
     document.querySelectorAll('.anim,#orb,.schedule>div').forEach(el=>{el.classList.add('in');el.classList.remove('preparing');el.style.removeProperty('will-change');});
     canvas.classList.add('settled');
-    counters.forEach(finish);elapsed=0;draw();
+    counters.forEach(finish);elapsed=0;
+    for(const p of points) p.pushX=p.pushY=0;
+    draw();
   }
   reduced.addEventListener('change',()=>{
     stop();document.documentElement.classList.toggle('motion',!reduced.matches);
     if(reduced.matches) staticFrame();updateScroll();
   });
   document.addEventListener('visibilitychange',()=>{stop();if(reduced.matches) draw();else start();});
-  addEventListener('pointermove',event=>{pointer.tx=(clamp(event.clientX/width)*2-1)*10;pointer.ty=(clamp(event.clientY/height)*2-1)*10;},{passive:true});
+  addEventListener('pointermove',event=>{pointer.x=event.clientX;pointer.y=event.clientY;},{passive:true});
+  addEventListener('pointerout',event=>{if(!event.relatedTarget) pointer.x=pointer.y=Infinity;},{passive:true});
+  addEventListener('pointercancel',()=>{pointer.x=pointer.y=Infinity;},{passive:true});
   addEventListener('scroll',updateScroll,{passive:true});
   addEventListener('resize',()=>{resize();updateScroll();},{passive:true});
   resize();if(reduced.matches) staticFrame();updateScroll();
