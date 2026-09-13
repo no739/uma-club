@@ -282,3 +282,21 @@ to{transform:translateY(0)}}
 
 /* ピンチ拡大を止める(iOS Safari は meta を無視することがあるので CSS でも) */
 html{touch-action:pan-x pan-y}
+/* 結果セクション(netkeiba 風。2026-09-14) */
+.rs-table{width:100%;border-collapse:collapse;font-size:14px;margin-top:14px}
+.rs-table th,.rs-table td{padding:8px 4px;border-bottom:1px solid #e5e5ea;vertical-align:middle;text-align:left}
+.rs-table th{font-size:11px;color:var(--muted);font-weight:500;white-space:nowrap;line-height:1.2}
+.rs-pos{width:34px;font-weight:700;font-size:17px;white-space:nowrap;font-variant-numeric:tabular-nums}.rs-pos small{font-size:10px;font-weight:500;color:var(--muted);margin-left:1px}
+.rs-num{width:64px;white-space:nowrap}.rs-num .waku-chip{display:inline-flex;width:26px;height:26px;font-size:13px;border-radius:6px;vertical-align:middle}
+.rs-uma{display:inline-block;width:26px;height:26px;line-height:24px;text-align:center;font-weight:700;font-size:14px;border:1px solid #d2d2d7;border-radius:6px;margin-left:3px;vertical-align:middle;background:#fff;box-sizing:border-box}
+.rs-name b{font-size:15px}.rs-name small{display:block;color:var(--muted);font-size:11.5px;margin-top:1px}.rs-mark{margin-left:6px;font-size:13px;color:var(--blue);font-weight:700}
+.rs-odds{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;font-weight:600}.rs-odds small{display:block;font-weight:400;font-size:11px}
+th.rs-odds{font-weight:500}.rs-agari{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);font-size:13px}
+.rs-top3 td{background:#fafafc}
+.rs-pay{width:100%;border-collapse:separate;border-spacing:0 5px;font-size:14px;margin-top:4px}
+.rs-pay th{width:62px;color:#fff;font-weight:600;font-size:13px;text-align:center;border-radius:8px 0 0 8px;padding:8px 4px;vertical-align:middle;border:0;white-space:nowrap}
+.rs-pay td{padding:4px 10px;border-radius:0 8px 8px 0;vertical-align:middle;border:0}
+.rs-pl{display:grid;grid-template-columns:1fr auto 70px;gap:8px;align-items:center;padding:5px 0;font-variant-numeric:tabular-nums}
+.rs-combo{font-weight:600;font-size:15px;white-space:nowrap}.rs-yen{text-align:right;font-weight:600;white-space:nowrap}.rs-rank{text-align:right;font-size:12px;color:var(--muted);white-space:nowrap}
+.rs-hit .rs-combo,.rs-hit .rs-yen{color:var(--plus)}.rs-rank i{font-style:normal;display:inline-block;margin-left:4px;padding:1px 5px;border-radius:4px;background:var(--plus);color:#fff;font-size:10px;vertical-align:middle}
+@media(max-width:620px){.rs-pl{grid-template-columns:1fr auto 62px;gap:6px}.rs-combo{font-size:14px}}
