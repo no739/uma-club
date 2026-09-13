@@ -76,12 +76,12 @@
   // Validate the entire frame-major Uint16 LE payload and permutation once.
   function decodeRun(data) {
     try {
-      if(!data || data.w!==300 || data.h!==200 || data.n!==2400 || data.frames!==12 ||
+      if(!data || data.w!==300 || data.h!==200 || data.n!==2400 || !(data.frames>=2&&data.frames<=64) ||
         !Array.isArray(data.perm) || data.perm.length!==2400 ||
         data.perm.some(i=>!Number.isInteger(i)||i<0||i>=2400) || new Set(data.perm).size!==2400) return null;
       const bytes=Uint8Array.from(atob(data.b64),c=>c.charCodeAt(0));
-      if(bytes.length!==12*2400*4) return null;
-      const view=new DataView(bytes.buffer),coords=new Uint16Array(12*2400*2);
+      if(bytes.length!==data.frames*2400*4) return null;
+      const view=new DataView(bytes.buffer),coords=new Uint16Array(data.frames*2400*2);
       for(let i=0;i<coords.length;i++) coords[i]=view.getUint16(i*2,true);
       const inverse=new Uint16Array(2400);data.perm.forEach((v,i)=>inverse[v]=i);
       return {...data,coords,inverse};
@@ -110,7 +110,7 @@
     runTime+=step;
   }
   function sample(slot,frame,axis) {
-    if(frame>=12) {frame-=12;slot=run.perm[slot];}
+    if(frame>=run.frames) {frame-=run.frames;slot=run.perm[slot];}
     return run.coords[(frame*2400+slot)*2+axis]/65535;
   }
   // コマ間は smoothstep(3t²−2t³) の連続移動。飛び越え・消失は行わない
@@ -153,8 +153,8 @@
     const horseWidth=width*(mobile?.96:.62),horseHeight=horseWidth*2/3;
     const runX=width*(mobile?.5:.60)+width*lerp(-.03,.03,clamp((progress-.24)/.48));
     const ground=height*(mobile?.60:.70);
-    // 1周 = 13.5 単位(通常区間 1、コマ11→0 は 2.5)
-    const units=(reduced.matches?0:runTime%1)*13.5,k=Math.min(11,Math.floor(units)),f=k===11?(units-11)/2.5:units-k;
+    // 1周 = コマ数(全区間同じ時間。最終コマ→コマ0 は perm で接続)
+    const nf=run?run.frames:1,units=(reduced.matches?0:runTime%1)*nf,k=Math.min(nf-1,Math.floor(units)),f=units-k;
     const wavePos=(time%3.2)/3.2*(Math.PI+.7)-.35;
     const projected=points.map((point,i)=>{
       const e=run?ease(clamp((entry-point.delay)/.65))*(1-ease(clamp((exit-point.delay)/.65))):0;
@@ -164,7 +164,8 @@
       const a=angle*(.55+.45*(1-Math.abs(point.y)));
       const rx=point.x*Math.cos(a)+point.z*Math.sin(a),rz=point.z*Math.cos(a)-point.x*Math.sin(a);
       const ry=point.y*Math.cos(tilt)-rz*Math.sin(tilt),depth=point.y*Math.sin(tilt)+rz*Math.cos(tilt);
-      const shape=reduced.matches?0:.10*(Math.sin(1.0*point.theta+slow/11)*Math.cos(point.phi*1.5-slow/9)*.7+Math.sin(2*point.phi+slow/14+point.theta*.5)*.3);
+      // スライムのように大きく・ゆっくり形が変わる(低周波3成分、合計で最大 ±30%)。とげは出ない
+      const shape=reduced.matches?0:(.16*Math.sin(point.theta+slow/11)*Math.cos(point.phi*1.5-slow/9)+.10*Math.sin(2*point.phi+slow/13+point.theta*.5)+.07*Math.cos(point.theta*2-slow/7+point.phi));
       const rr=radius*(1+shape);
       let x=sx+rx*rr,y=sy+ry*rr;
       const dx=x-pointer.x,dy=y-pointer.y,dist=Math.hypot(dx,dy);
@@ -195,6 +196,7 @@
       const calm=e>0?1/(1+Math.max(0,speed-3)/9):1;
       const alpha=lerp(Math.min(.85,.15+.7*front+.35*wave+.25*twinkle),.55*calm,e);
       const size=lerp((1.6+1.4*front)*(1+.4*wave),2.5+.4*(1-Math.abs(point.y)),e)*dotScale;
+      point.alpha=alpha;
       return {x,y,alpha,size,color:depth<-.3?2:Math.abs(depth)<.3?1:0};
     });
     for(const p of projected) dot(p.x,p.y,p.size,p.alpha,p.color);
