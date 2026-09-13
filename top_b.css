@@ -91,3 +91,10 @@ main { position:relative; z-index:1; overflow-x:clip; }
 @media(prefers-reduced-motion:reduce) { *,*::before,*::after { transition:none!important; animation:none!important; } .motion .anim,.motion #orb { opacity:1; transform:none; } .motion .schedule>div::after { transform:scaleX(1); } .header.hidden { transform:none; } }
 
 html{touch-action:pan-x pan-y}
+/* ヘッダーの高さ・ロゴ・ナビをレースページ(.site-header)と完全に揃える(2026-09-14 ユーザー指示: レースを正とする) */
+.header { padding:16px max(48px,calc((100vw - 1200px)/2)); gap:16px; }
+.header nav { gap:32px; }
+.header nav a { font-size:15px; padding:8px 0; line-height:1.55; border-bottom:2px solid transparent; }
+.header nav a[aria-current] { border-bottom-color:var(--blue); }
+.brand img { height:40px; }
+@media (max-width:620px) { .header { padding:12px 20px; gap:16px; } .header nav { gap:20px; } .brand img { height:38px; } }
