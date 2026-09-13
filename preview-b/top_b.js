@@ -94,7 +94,7 @@
   const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
   const pointer={x:Infinity,y:Infinity};
   const scrollSamples=[],costs=[];
-  let runTime=0,dustBudget=0,dustCursor=0,sphereTime=0,lineQuality=1,sprites=[],lineTexture,lineContext,linePixels;
+  let runTime=0,dustBudget=0,dustCursor=0,sphereTime=0,lineQuality=1,qualityStage=0,softSprite,sprites=[],lineTexture,lineContext,linePixels;
   const dust=Array.from({length:48},()=>({life:0,x:0,y:0}));
   const entering=()=>clamp((progress-.10)/.14);
   const leaving=()=>clamp((progress-.72)/.14);
@@ -103,7 +103,7 @@
     while(scrollSamples.length && scrollSamples[0].time<=now-300) scrollSamples.shift();
     const speed=scrollSamples.reduce((sum,s)=>sum+s.distance,0)/.3;
     if(!run || progress<=.184 || progress>=.86) return;
-    const step=delta/900*(1+1.2*Math.min(speed/2000,1))*ease(clamp((entering()-.6)/.4));
+    const step=delta/1050*ease(clamp((entering()-.6)/.4));
     const cycles=Math.floor(runTime+step)-Math.floor(runTime);
     for(let c=0;c<cycles;c++) for(let i=0;i<slots.length;i++) slots[i]=run.perm[slots[i]];
     runTime+=step;dustBudget=Math.min(4,dustBudget+step*24);
@@ -122,6 +122,11 @@
     return k===11?lerp(b,c,f):catmullRom(sample(slot,k-1,axis),b,c,sample(slot,k+2,axis),f);
   }
   function makeSprites(dpr) {
+    softSprite=document.createElement('canvas');softSprite.width=softSprite.height=Math.ceil(7*dpr);
+    const soft=softSprite.getContext('2d'),sr=softSprite.width/2;
+    const wash=soft.createRadialGradient(sr,sr,0,sr,sr,sr);
+    wash.addColorStop(0,'rgba(9,111,200,1)');wash.addColorStop(1,'rgba(9,111,200,0)');
+    soft.fillStyle=wash;soft.beginPath();soft.arc(sr,sr,sr,0,Math.PI*2);soft.fill();
     sprites=['9,111,200','120,190,255','3,60,120','107,111,115'].map(rgb=>
       [2,2.6,3.2].map(size=>{
         const sprite=document.createElement('canvas');
@@ -142,44 +147,59 @@
     ctx.clearRect(0,0,width,height);
     const mobile=width<640,entry=entering(),exit=leaving();
     const transitioning=run&&((progress>.10&&progress<.24)||(progress>.72&&progress<.86));
-    const end=ease(exit),angle=reduced.matches?0:sphereTime*2*Math.PI/40;
-    const time=reduced.matches?0:sphereTime,tilt=reduced.matches?0:Math.sin(time*2*Math.PI/9)*Math.PI/15;
+    const end=ease(exit),angle=reduced.matches?0:sphereTime*2*Math.PI/28;
+    const time=reduced.matches?0:sphereTime,tilt=reduced.matches?0:Math.sin(time*2*Math.PI/9)*Math.PI/10;
     const radius=Math.min(width,height)*lerp(mobile?.30:.28,.26,end);
     const sx=width*lerp(mobile?.5:.70,mobile?.5:.62,end);
     const sy=height*lerp(mobile?.26:.50,mobile?.60:.55,end);
     const horseWidth=width*(mobile?1.08:.62),horseHeight=horseWidth*2/3;
     const runX=width*(mobile?.5:.60)+width*lerp(-.08,.08,clamp((progress-.24)/.48));
     const ground=height*(mobile?.60:.70);
-    const frame=(reduced.matches?0:runTime%1)*12,k=Math.floor(frame),f=frame-k;
+    const units=(reduced.matches?0:runTime%1)*13.5,k=Math.min(11,Math.floor(units)),f=k===11?(units-11)/2.5:units-k;
+    const pulse=t=>t<0||t>=.78?0:t<.18?ease(t/.18):1-ease((t-.18)/.6);
+    const beat=reduced.matches?0:.09*Math.max(pulse(time%4.5),pulse(time%4.5-.9));
     const projected=points.map((point,i)=>{
       const e=run?ease(clamp((entry-point.delay)/.65))*(1-ease(clamp((exit-point.delay)/.65))):0;
       const {theta,phi}=point;
-      const noise=(Math.sin(2*theta+.7*time)*Math.cos(3*phi-.5*time)+.5*Math.sin(5*theta-1.1*time+phi)+.25*Math.sin(9*phi+1.9*time))/1.75;
+      const nt=time*1.3;
+      const noise=(Math.sin(2*theta+.7*nt)*Math.cos(3*phi-.5*nt)+.5*Math.sin(5*theta-1.1*nt+phi)+.25*Math.sin(9*phi+1.9*nt))/1.75;
       const wave=reduced.matches?0:Math.max(0,1-Math.abs(phi-(time%3.2)/3.2*(Math.PI+.7)+.35)/.175);
-      const r=radius*(1+.07*noise+.04*wave);
+      const r=radius*(1+.16*noise+.07*wave)*(1+beat);
       const rx=point.x*Math.cos(angle)+point.z*Math.sin(angle),rz=point.z*Math.cos(angle)-point.x*Math.sin(angle);
       const ry=point.y*Math.cos(tilt)-rz*Math.sin(tilt),depth=point.y*Math.sin(tilt)+rz*Math.cos(tilt);
-      let x=sx+rx*r,y=sy+ry*r;
+      const baseX=sx+rx*r,baseY=sy+ry*r;
+      const flight=!reduced.matches&&point.flightEnd>time?28*Math.sin(Math.PI*clamp((time-point.flightStart)/(point.flightEnd-point.flightStart)))*(1-e):0;
+      let x=baseX+rx*flight,y=baseY+ry*flight;
       const dx=x-pointer.x,dy=y-pointer.y,dist=Math.hypot(dx,dy);
-      const push=!reduced.matches&&dist<70?10*(1-dist/70):0;
+      const push=!reduced.matches&&dist<90?16*(1-dist/90):0;
       point.pushX+=((dist>0?dx/dist*push:0)-point.pushX)*.08;
       point.pushY+=((dist>0?dy/dist*push:0)-point.pushY)*.08;
       // Infinity denotes an absent pointer; never multiply Infinity by zero.
       if(!Number.isFinite(point.pushX)) point.pushX=0;
       if(!Number.isFinite(point.pushY)) point.pushY=0;
       x+=point.pushX*(1-e);y+=point.pushY*(1-e);
-      let hoof=false;
+      let hoof=false,teleport=false,visibility=1,travel=0;
       if(run) {
         const slot=reduced.matches?i:slots[i];
-        const hx=horseCoord(slot,k,f,0),hy=horseCoord(slot,k,f,1);
+        const bx=sample(slot,k,0),by=sample(slot,k,1),cx=sample(slot,k+1,0),cy=sample(slot,k+1,1);
+        travel=Math.hypot((cx-bx)*300,(cy-by)*200);teleport=!reduced.matches&&travel>9;
+        const side=f<.5?0:1,key=`${Math.floor(runTime)}:${k}:${side}`;
+        let hx=horseCoord(slot,k,f,0),hy=horseCoord(slot,k,f,1);
+        if(teleport) {
+          hx=side?cx:bx;hy=side?cy:by;visibility=Math.abs(2*f-1);
+          // Discrete refresh rates can skip f=.5: hide the actual relocation frame.
+          if(point.travelKey!==key) visibility=0;
+        }
         const targetX=runX+(hx-.5)*horseWidth,targetY=ground+(hy-1)*horseHeight;
-        // Keep the live gallop source continuous when direct morph placement starts.
-        const follow=!reduced.matches&&Number.isFinite(point.horseX)?.45:1;
+        const follow=!transitioning&&!reduced.matches&&Number.isFinite(point.horseX)?.45:1;
         const oldHorseX=point.horseX??targetX,oldHorseY=point.horseY??targetY;
-        const moveX=(targetX-oldHorseX)*follow,moveY=(targetY-oldHorseY)*follow;
-        // Bound rare large seam assignments so a permutation cannot flash across the screen.
-        const bound=reduced.matches?1:Math.min(1,16/(Math.hypot(moveX,moveY)||1));
-        point.horseX=oldHorseX+moveX*bound;point.horseY=oldHorseY+moveY*bound;
+        const mx=(targetX-oldHorseX)*follow,my=(targetY-oldHorseY)*follow;
+        const bound=reduced.matches||transitioning?1:Math.min(1,(9*horseWidth/300)/(Math.hypot(mx,my)||1));
+        point.horseX=teleport?targetX:oldHorseX+mx*bound;
+        point.horseY=teleport?targetY:oldHorseY+my*bound;
+        // Also hide a relocation when an interval was skipped by a slow frame.
+        if(!reduced.matches&&e===1&&Number.isFinite(point.posX)&&Math.hypot(point.horseX-point.posX,point.horseY-point.posY)>9*horseWidth/300) visibility=0;
+        point.travelKey=key;
         x=lerp(x,point.horseX,e);y=lerp(y,point.horseY,e);hoof=hy>.90;
       }
       const oldX=point.posX,oldY=point.posY;
@@ -187,22 +207,31 @@
       point.posX=x;point.posY=y;
       const twinkleSlot=(i+point.twinkleOffset)%points.length;
       const twinkle=!reduced.matches&&twinkleSlot<Math.floor(points.length*.03)?Math.sin(Math.PI*(time% .8)/.8):0;
-      const front=clamp((depth+1)/2),alpha=lerp(Math.min(.85,.15+.7*front+.3*wave+.25*twinkle),.40,e);
-      const size=lerp(Math.min(3,1.6+1.4*front+.2*wave),2+.6*(1-Math.abs(point.y)),e);
-      return {x,y,z:depth,e,alpha,size,hoof,dx:Number.isFinite(oldX)?x-oldX:0,dy:Number.isFinite(oldY)?y-oldY:0,color:depth<-.3?2:Math.abs(depth)<.3?1:0};
+      const front=clamp((depth+1)/2),alpha=lerp(Math.min(.85,.15+.7*front+.35*wave+.25*twinkle),.40,e)*lerp(1,visibility,e);
+      const size=lerp((1.6+1.4*front)*(1+.4*wave),2.2+.4*(1-Math.abs(point.y)),e);
+      point.alpha=alpha;
+      return {x,y,z:depth,e,alpha,size,hoof,teleport,travel,baseX,baseY,flight,dx:Number.isFinite(oldX)?x-oldX:0,dy:Number.isFinite(oldY)?y-oldY:0,color:depth<-.3?2:Math.abs(depth)<.3?1:0};
     });
-    // A 14px spatial hash limits neighbour search; one combined neural stroke.
-    if(!reduced.matches&&morph()<1) {
-      const grid=new Map(),limit=Math.floor((mobile?400:700)*lineQuality);let lines=0;
+    for(const p of projected) {
+      ctx.globalAlpha=.045*clamp((p.e-.8)/.2)*(p.alpha/.40);
+      ctx.drawImage(softSprite,p.x-3.5,p.y-3.5,7,7);
+    }
+    if(!reduced.matches&&lineQuality) for(const p of projected) if(p.flight>0) {
+      ctx.globalAlpha=.10*(1-p.e);ctx.strokeStyle='rgb(9,111,200)';ctx.lineWidth=.5;
+      ctx.beginPath();ctx.moveTo(p.baseX,p.baseY);ctx.lineTo(p.x,p.y);ctx.stroke();
+    }
+    // A 20px spatial hash limits neighbour search; one combined neural stroke.
+    if(!reduced.matches&&lineQuality&&morph()<1) {
+      const grid=new Map(),limit=Math.max(0,Math.floor((mobile?600:900)*lineQuality)-projected.filter(p=>p.flight>0).length);let lines=0;
       ctx.beginPath();ctx.lineWidth=.6;linePixels.data.fill(0);
       for(const p of projected) {
         if(p.z<=.15||p.e>=1) continue;
-        const gx=Math.floor(p.x/14),gy=Math.floor(p.y/14);
+        const gx=Math.floor(p.x/20),gy=Math.floor(p.y/20);
         for(let a=-1;a<=1&&lines<limit;a++) for(let b=-1;b<=1&&lines<limit;b++) {
           for(const q of grid.get(`${gx+a},${gy+b}`)||[]) {
             const distance=Math.hypot(p.x-q.x,p.y-q.y);
-            if(distance<=14&&lines<limit) {
-              const alpha=lerp(.14,.06,distance/14)*(1-Math.max(p.e,q.e));
+            if(distance<=20&&lines<limit) {
+              const alpha=lerp(.22,.08,distance/20)*(1-Math.max(p.e,q.e));
               // An alpha texture gives each subpath its own opacity in one stroke.
               const steps=Math.max(1,Math.ceil(distance*2));
               for(let step=0;step<=steps;step++) {
@@ -223,20 +252,22 @@
       lineContext.putImageData(linePixels,0,0);
       ctx.globalAlpha=1;ctx.strokeStyle=ctx.createPattern(lineTexture,'no-repeat');ctx.stroke();
     }
+    for(const p of projected) dot(p.x,p.y,p.size,p.alpha,p.color);
     for(const p of projected) {
-      dot(p.x,p.y,p.size,p.alpha,p.color);
-      if(!reduced.matches&&p.e>0&&Math.hypot(p.dx,p.dy)>=2.5) {
+      if(!reduced.matches&&qualityStage<3&&p.e>0&&!p.teleport&&p.travel>=2.5&&p.travel<=9&&p.alpha>0) {
         ctx.globalAlpha=p.alpha*.25*p.e;ctx.strokeStyle='rgb(9,111,200)';ctx.lineWidth=1;
         ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x-p.dx*.5,p.y-p.dy*.5);ctx.stroke();
       }
-      if(!reduced.matches&&p.e>.9&&p.hoof&&dustBudget>=1) {
+      if(!reduced.matches&&qualityStage<2&&p.alpha>0&&p.e>.9&&p.hoof&&dustBudget>=1) {
         const d=dust[dustCursor++%dust.length];d.x=p.x;d.y=p.y;d.life=.5;dustBudget--;
       }
     }
-    if(!reduced.matches) for(const d of dust) if(d.life>0) dot(d.x,d.y,2,.18*d.life/.5*(1-end),3);
+    if(!reduced.matches&&qualityStage<2) for(const d of dust) if(d.life>0) dot(d.x,d.y,2,.18*d.life/.5*(1-end),3);
     ctx.globalAlpha=1;
     costs.push(performance.now()-began);if(costs.length>30) costs.shift();
-    lineQuality=costs.length===30&&costs.reduce((a,b)=>a+b,0)/30>20?.5:1;
+    if(costs.length===30&&costs.reduce((a,b)=>a+b,0)/30>22&&qualityStage<3) {
+      qualityStage++;lineQuality=0;costs.length=0;
+    }
   }
   function resize() {
     width=canvas.clientWidth;height=canvas.clientHeight;
@@ -245,7 +276,7 @@
     makeSprites(dpr);
     lineTexture=document.createElement('canvas');lineTexture.width=Math.ceil(width);lineTexture.height=Math.ceil(height);
     lineContext=lineTexture.getContext('2d');linePixels=lineContext.createImageData(lineTexture.width,lineTexture.height);
-    const count=width<640?1400:2400;
+    const count=2400;
     if(points.length!==count) points=Array.from({length:count},(_,i)=>{
       const y=1-2*(i+.5)/count,r=Math.sqrt(1-y*y),theta=i*Math.PI*(3-Math.sqrt(5));
       return {x:Math.cos(theta)*r,y,z:Math.sin(theta)*r,theta,phi:Math.acos(y),delay:Math.random()*.35,pushX:0,pushY:0,twinkleOffset:0};
@@ -263,6 +294,14 @@
     sphereTime+=delta/1000*(1-ease(morph()));
     if(Math.floor(sphereTime/.8)!==oldTwinkle) {
       const offset=Math.floor(Math.random()*points.length);for(const p of points) p.twinkleOffset=offset;
+    }
+    if(!reduced.matches) {
+      const flying=points.filter(p=>p.flightEnd>sphereTime);
+      const available=points.filter(p=>!(p.flightEnd>sphereTime));
+      for(let n=flying.length;n<Math.floor(points.length*.04);n++) {
+        const j=Math.floor(Math.random()*available.length),p=available.splice(j,1)[0];
+        p.flightStart=sphereTime;p.flightEnd=sphereTime+1.5+Math.random();
+      }
     }
     draw();
     for(const [el,state] of active) {
