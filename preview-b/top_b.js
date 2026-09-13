@@ -76,19 +76,20 @@
   // Validate the entire frame-major Uint16 LE payload and permutation once.
   function decodeRun(data) {
     try {
-      if(!data || data.w!==300 || data.h!==200 || data.n!==2400 || !(data.frames>=2&&data.frames<=64) ||
-        !Array.isArray(data.perm) || data.perm.length!==2400 ||
-        data.perm.some(i=>!Number.isInteger(i)||i<0||i>=2400) || new Set(data.perm).size!==2400) return null;
+      if(!data || data.w!==300 || data.h!==200 || !(data.n>=500&&data.n<=6000) || !(data.frames>=2&&data.frames<=64) ||
+        !Array.isArray(data.perm) || data.perm.length!==data.n ||
+        data.perm.some(i=>!Number.isInteger(i)||i<0||i>=data.n) || new Set(data.perm).size!==data.n) return null;
       const bytes=Uint8Array.from(atob(data.b64),c=>c.charCodeAt(0));
-      if(bytes.length!==data.frames*2400*4) return null;
-      const view=new DataView(bytes.buffer),coords=new Uint16Array(data.frames*2400*2);
+      if(bytes.length!==data.frames*data.n*4) return null;
+      const view=new DataView(bytes.buffer),coords=new Uint16Array(data.frames*data.n*2);
       for(let i=0;i<coords.length;i++) coords[i]=view.getUint16(i*2,true);
-      const inverse=new Uint16Array(2400);data.perm.forEach((v,i)=>inverse[v]=i);
+      const inverse=new Uint16Array(data.n);data.perm.forEach((v,i)=>inverse[v]=i);
       return {...data,coords,inverse};
     } catch { return null; }
   }
   const run=decodeRun(window.HORSE_RUN);
-  const slots=Uint16Array.from({length:2400},(_,i)=>i);
+  const COUNT=run?run.n:2400;
+  const slots=Uint16Array.from({length:COUNT},(_,i)=>i);
   const clamp=n=>Math.max(0,Math.min(1,n));
   const lerp=(a,b,t)=>a+(b-a)*t;
   const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
@@ -111,7 +112,7 @@
   }
   function sample(slot,frame,axis) {
     if(frame>=run.frames) {frame-=run.frames;slot=run.perm[slot];}
-    return run.coords[(frame*2400+slot)*2+axis]/65535;
+    return run.coords[(frame*run.n+slot)*2+axis]/65535;
   }
   // コマ間は smoothstep(3t²−2t³) の連続移動。飛び越え・消失は行わない
   function horseCoord(slot,k,f,axis) {
@@ -165,9 +166,11 @@
       const rx=point.x*Math.cos(a)+point.z*Math.sin(a),rz=point.z*Math.cos(a)-point.x*Math.sin(a);
       const ry=point.y*Math.cos(tilt)-rz*Math.sin(tilt),depth=point.y*Math.sin(tilt)+rz*Math.cos(tilt);
       // スライムのように大きく・ゆっくり形が変わる(低周波3成分、合計で最大 ±30%)。とげは出ない
-      const shape=reduced.matches?0:(.16*Math.sin(point.theta+slow/11)*Math.cos(point.phi*1.5-slow/9)+.10*Math.sin(2*point.phi+slow/13+point.theta*.5)+.07*Math.cos(point.theta*2-slow/7+point.phi));
+      const shape=reduced.matches?0:(.22*Math.sin(point.theta+slow/11)*Math.cos(point.phi*1.5-slow/9)+.14*Math.sin(2*point.phi+slow/13+point.theta*.5)+.10*Math.cos(point.theta*2-slow/7+point.phi));
       const rr=radius*(1+shape);
-      let x=sx+rx*rr,y=sy+ry*rr;
+      // 全体の伸び縮み(5.5s)と、ゆっくりした揺れ(中心が動く)
+      const stretch=reduced.matches?0:.08*Math.sin(slow/5.5),swayX=reduced.matches?0:radius*.10*Math.sin(slow/8.5),swayY=reduced.matches?0:radius*.07*Math.cos(slow/6.5);
+      let x=sx+swayX+rx*rr*(1+stretch),y=sy+swayY+ry*rr*(1-stretch);
       const dx=x-pointer.x,dy=y-pointer.y,dist=Math.hypot(dx,dy);
       const push=!reduced.matches&&dist<90?16*(1-dist/90):0;
       point.pushX+=((dist>0?dx/dist*push:0)-point.pushX)*.08;
@@ -209,7 +212,7 @@
     const dpr=devicePixelRatio||1;canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);
     if(ctx) ctx.setTransform(dpr,0,0,dpr,0,0);
     makeSprites(dpr);
-    const count=2400;
+    const count=COUNT;
     if(points.length!==count) points=Array.from({length:count},(_,i)=>{
       const y=1-2*(i+.5)/count,r=Math.sqrt(1-y*y),theta=i*Math.PI*(3-Math.sqrt(5));
       return {x:Math.cos(theta)*r,y,z:Math.sin(theta)*r,theta,phi:Math.acos(y),delay:Math.random()*.35,pushX:0,pushY:0,twinkleOffset:0};
