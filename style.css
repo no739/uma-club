@@ -262,7 +262,7 @@ to{transform:translateY(0)}}
 .otab-table td{padding:3px 0;border-bottom:1px solid #ececf0;text-align:center}
 .otab-table .otab-name{text-align:left;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding-left:4px}
 .otab-win small{display:block;font-size:10px}.otab-place{font-size:11px}
-.otab-root .otab-check{width:44px;height:44px;min-width:44px;border:1px solid #e2e2e6;background:var(--tile);font-size:19px;border-radius:8px}
+.otab-root .otab-check{width:34px;height:34px;min-width:34px;min-height:34px;padding:0;border:1px solid #d8d8dd;background:var(--tile);font-size:16px;border-radius:7px}
 .otab-root .otab-check.on{background:var(--button);color:#fff;border-color:var(--button)}
 .otab-rank1{color:#d70015}.otab-rank2{color:#0066cc}.otab-rank3{color:#008a2e}
 .otab-bar{position:sticky;bottom:0;z-index:2;display:flex;align-items:center;gap:6px;background:#fff;border-top:1px solid #d2d2d7;padding:10px 0 calc(10px + env(safe-area-inset-bottom));font-size:12px}
