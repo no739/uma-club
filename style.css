@@ -253,9 +253,9 @@ to{transform:translateY(0)}}
 .otab-types{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:4px 0 12px}
 .otab-types button{min-width:0;font-size:14px;white-space:nowrap;padding:8px 4px;background:var(--tile);color:var(--ink)}
 .otab-types button.on,.otab-check.on,.otab-root .otab-view{background:var(--button);color:#fff}
-.otab-modes{display:flex;background:var(--tile);border-radius:10px;padding:3px;margin-bottom:12px}
-.otab-modes button{flex:1;background:transparent;color:var(--muted)}
-.otab-modes button.on{background:#fff;color:var(--ink)}
+.otab-modes{display:flex;background:#e3e3e8;border-radius:9px;padding:2px;margin-bottom:12px}
+.otab-modes button{flex:1;min-height:34px;padding:6px 8px;font-size:14px;background:transparent;color:#3a3a3c;border-radius:7px}
+.otab-modes button.on{background:#fff;color:var(--ink);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.18)}
 .otab-root [hidden]{display:none!important}
 .otab-table{width:100%;table-layout:fixed;border-collapse:collapse;font-size:12px}
 .otab-table th{font-size:10px;color:var(--muted);font-weight:500;padding:6px 0;text-align:center}
