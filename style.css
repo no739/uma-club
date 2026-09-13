@@ -311,3 +311,8 @@ th.rs-odds{font-weight:500}.rs-agari{text-align:right;font-variant-numeric:tabul
 .waku-rows{flex:1;min-width:0;display:flex;flex-direction:column}
 .waku-group+.waku-group .waku-bar{margin-top:7px}
 @media(max-width:620px){.rs-table{font-size:13px}.rs-table th,.rs-table td{padding:7px 3px}.rs-pos{width:30px;font-size:15px}.rs-num{width:50px}.rs-num .waku-chip,.rs-uma{width:24px;height:24px;font-size:13px}.rs-num .waku-chip{width:18px;height:38px;font-size:13px}.rs-uma{line-height:22px;margin-left:2px}.rs-name b{font-size:13.5px}.rs-name small{font-size:11px}.rs-time{font-size:12px}.rs-time small{font-size:10px}.rs-odds{font-size:13px}.rs-odds small{font-size:10px}}
+/* 共通ヘッダー(レース・成績・各レース)は黒。トップ(LP)はそのまま(2026-09-14) */
+.site-header{background:rgba(29,29,31,.96);border-bottom-color:rgba(255,255,255,.12)}
+.site-header .brand{color:#fff}
+.site-header nav a{color:rgba(255,255,255,.78)}
+.site-header nav a.on{color:#fff;border-bottom-color:#4c9aff}
