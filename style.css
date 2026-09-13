@@ -221,3 +221,4 @@ to{transform:translateY(0)}}
 .horse-row.v2 .h-odds{font-size:14px;margin-top:2px;white-space:nowrap}
 .horse-row.v2 .h-odds small{display:inline;margin-left:2px;font-size:10.5px}
 .horse-row.v2 .h-score{margin-top:2px}
+.h-bw{font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
