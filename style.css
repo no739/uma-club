@@ -278,3 +278,6 @@ to{transform:translateY(0)}}
 .otab-flow-options button.on{background:var(--button);color:#fff}
 .otab-multi{display:flex;align-items:center;gap:8px;min-height:44px;font-size:14px}
 .otab-multi input{width:22px;height:22px;accent-color:var(--button)}
+
+/* ピンチ拡大を止める(iOS Safari は meta を無視することがあるので CSS でも) */
+html{touch-action:pan-x pan-y}

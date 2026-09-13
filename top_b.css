@@ -85,3 +85,5 @@ main { position:relative; z-index:1; overflow-x:clip; }
  .disclaimer { margin-block:64px; } .footer-inner nav { gap:20px; }
 }
 @media(prefers-reduced-motion:reduce) { *,*::before,*::after { transition:none!important; animation:none!important; } .motion .anim,.motion #orb { opacity:1; transform:none; } .motion .schedule>div::after { transform:scaleX(1); } .header.hidden { transform:none; } }
+
+html{touch-action:pan-x pan-y}
