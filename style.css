@@ -289,6 +289,9 @@ html{touch-action:pan-x pan-y}
 .rs-pos{width:34px;font-weight:700;font-size:17px;white-space:nowrap;font-variant-numeric:tabular-nums}.rs-pos small{font-size:10px;font-weight:500;color:var(--muted);margin-left:1px}
 .rs-num{width:64px;white-space:nowrap}.rs-num .waku-chip{display:inline-flex;width:26px;height:26px;font-size:13px;border-radius:6px;vertical-align:middle}
 .rs-uma{display:inline-block;width:26px;height:26px;line-height:24px;text-align:center;font-weight:700;font-size:14px;border:1px solid #d2d2d7;border-radius:6px;margin-left:3px;vertical-align:middle;background:#fff;box-sizing:border-box}
+.rs-num .waku-chip{opacity:.85;font-weight:600}.rs-uma[class*=Waku]{border-color:transparent}.rs-uma.Waku1{border-color:#d2d2d7}
+.rs-time{white-space:nowrap;font-variant-numeric:tabular-nums;font-size:13px;font-weight:600}.rs-time small{display:block;font-weight:400;font-size:11px;color:var(--muted)}
+.rs-morebtn{display:block;width:100%;margin:10px 0 4px;padding:11px;border:1px solid #d2d2d7;border-radius:10px;background:#fff;color:var(--ink);font:inherit;font-size:14px;font-weight:600;cursor:pointer}.rs-morebtn:active{background:var(--tile)}
 .rs-name b{font-size:15px}.rs-name small{display:block;color:var(--muted);font-size:11.5px;margin-top:1px}.rs-mark{margin-left:6px;font-size:13px;color:var(--blue);font-weight:700}
 .rs-odds{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;font-weight:600}.rs-odds small{display:block;font-weight:400;font-size:11px}
 th.rs-odds{font-weight:500}.rs-agari{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);font-size:13px}

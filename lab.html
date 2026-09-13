@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"><title>ラボ | AI Keiba Club</title><link rel="stylesheet" href="style.css?v=71554fa8"><script>(function(){var p=function(e){e.preventDefault()};['gesturestart','gesturechange','gestureend'].forEach(function(n){document.addEventListener(n,p,{passive:false})});document.addEventListener('touchmove',function(e){if(e.touches&&e.touches.length>1)e.preventDefault()},{passive:false});var last=0;document.addEventListener('touchend',function(e){var t=Date.now();if(t-last<300&&e.touches.length===0){e.preventDefault()}last=t},{passive:false});})();</script></head><body><header class="site-header"><a class="brand" href="index.html" aria-label="AI Keiba Club"><img src="logo.png?v=253397e6" alt="AI Keiba Club"></a><nav><a class="" href="index.html">トップ</a><a class="" href="races.html">レース</a><a class="" href="stats.html">成績</a></nav></header><main class="lab">
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"><title>ラボ | AI Keiba Club</title><link rel="stylesheet" href="style.css?v=a4a028b4"><script>(function(){var p=function(e){e.preventDefault()};['gesturestart','gesturechange','gestureend'].forEach(function(n){document.addEventListener(n,p,{passive:false})});document.addEventListener('touchmove',function(e){if(e.touches&&e.touches.length>1)e.preventDefault()},{passive:false});var last=0;document.addEventListener('touchend',function(e){var t=Date.now();if(t-last<300&&e.touches.length===0){e.preventDefault()}last=t},{passive:false});})();</script></head><body><header class="site-header"><a class="brand" href="index.html" aria-label="AI Keiba Club"><img src="logo.png?v=253397e6" alt="AI Keiba Club"></a><nav><a class="" href="index.html">トップ</a><a class="" href="races.html">レース</a><a class="" href="stats.html">成績</a></nav></header><main class="lab">
 <h1>ラボ</h1>
 <p class="lab-lead">過去10年・JRA全レース(32,000超)を自由に集計できます。条件を選んで「集計する」を押してください。</p>
 <div class="lab-presets" id="presets"></div>
@@ -139,7 +139,7 @@ el('go').onclick=run;
   if(open){history.pushState({wv:1},'','#view');history.pushState({wv:1},'','#view');}
  });
  fetch("version.json",{cache:"no-store"}).then(function(r){return r.json()}).then(function(v){
-  if(v.build!=="20260914035516" && !sessionStorage.getItem("rl_"+v.build)){
+  if(v.build!=="20260914040458" && !sessionStorage.getItem("rl_"+v.build)){
    sessionStorage.setItem("rl_"+v.build,"1");location.reload();}
  }).catch(function(){});
 })();
