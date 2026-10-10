@@ -1,0 +1,54 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"><title>復習 | AI Keiba Club</title><link rel="stylesheet" href="../style.css?v=87ae7a54"><script>(function(){var p=function(e){e.preventDefault()};['gesturestart','gesturechange','gestureend'].forEach(function(n){document.addEventListener(n,p,{passive:false})});document.addEventListener('touchmove',function(e){if(e.touches&&e.touches.length>1)e.preventDefault()},{passive:false});var last=0;document.addEventListener('touchend',function(e){var t=Date.now();if(t-last<300&&e.touches.length===0){e.preventDefault()}last=t},{passive:false});})();</script></head><body><header class="site-header"><a class="brand" href="../index.html" aria-label="AI Keiba Club"><img src="../logo_white.png?v=6250369c" alt="AI Keiba Club"></a><nav><a class="" href="../index.html">トップ</a><a class="" href="../races.html">レース</a><a class="" href="../stats.html">成績</a></nav></header><main><h1>20261010 の復習</h1><p>東京12R・京都12R(全R良・開幕2週目)で投資20,500円・払戻3,770円・収支-16,730円・回収率18.4%、的中2R(東京6R 馬連¥970・東京8R 3連単¥2,800)。外れ22Rは予想ミス17・買い方ミス5・惜敗0で、今週も直すのは「印(馬の評価)」。◎の3着内は11/24(1着6本)で単勝◎だけなら113.1%だったが、○▲の3着内が少なく(◎○▲の3着内25/72=34.7%)、京都は12R・ダートは12Rとも的中0。印のカバー率63.9%は指数上位6頭65.3%を下回り(未達・-1.4pt)、指数上位3頭は37.5%。3着内の無印26頭の指数順位は4〜9位16頭・10位以下10頭で、今日は「印の付け方」側の問題が中心。的中倍率は1.94倍・2.80倍(平均2.37倍・2本とも4倍未満、どちらも押さえの△が来た形)。hint上位3位の見逃しは東京11R 3サトノハクマイ(2着)の1頭だが、hint30.0が7頭同値の並び順で、実質は『逃げ・先行の無印に残られた』パターン。累計(9/5〜10/10の288R)は投資281,400・払戻189,930・収支-91,470・回収率67.5%。Opus 5.5 に替えた9/26以降の120Rは26.8%で、それ以前(9/5〜9/22の168R)の93.8%から大きく落ちている(開催場・馬場・プロンプト改訂が同時に変わっており、原因はまだ切り分けられない)。</p><h2>教訓</h2><ul><li>【最優先・工程の不具合(5開催日連続)】当日人気による印のAI見直しが0R。revision はすべて source=scenario・changed=false。今日も候補に出ていた東京4R 無印16(2人気→3着)・京都12R 無印8(1〜2人気→2着)が3着内。来週測る数字: 見直し実行 0R → 候補があるレース全件</li><li>【印】逃げ・先行の無印に残られた(5件目以降・4開催日連続): 東京3R 2(逃げ2着)・東京10R 2(逃げ2着)・東京11R 3(内2〜3番手で2着)・京都7R 1(逃げ2着)・京都10R 7(大逃げ2着)・京都11R 10(番手2着)の6頭。△の最後の1枠は『近2走で逃げたか通過順1〜2番手の馬のうち指数最上位』に充てる。来週測る数字: 3着内の無印のうち逃げ・番手の馬 6頭 → 3頭以下</li><li>【印】○▲の精度: ◎の3着内は11/24あるのに○▲が来ない(◎○▲の3着内 25/72)。Opus 5.5 期(120R)の『◎○▲のうち2頭以上が3着内』は33%で、それ以前(_axes がある48R)の60%から半減。◎3着内率は48%→39%で落ち幅は小さく、落ちているのは○▲の選び方</li><li>【印】◎を市場が8番人気以下まで割り引いている馬にしない(再発): 東京2R ◎2(8人)・京都7R ◎6(8人・21.0倍)はどちらも圏外。累計で◎4番人気以下は ◎3着内率17〜36%</li><li>【買い方・観察(凍結中なのでルールは変えない)】人気上位の組・馬を外す処理で落とした的中が今日5R: 東京5R(○10を外し1-2-10 ¥1,610)・京都1R(2-6-14 ¥1,280)・京都3R(△2を外し馬連2-6 ¥1,650)・京都6R(1人気△9を入れず馬連1-9 ¥900×4口)・京都8R(1.3倍の○6を外し)。凍結明けの候補は10/3と同じ『除外は人気順位でなくその組の払戻×口数＜投資額で決める』</li><li>【検証中・新規 仮説P】Opus 5.5 に替えてから良馬場の回収率が 108.4%(24R)→19.2%(90R)。開催場(中山・阪神→東京・京都の開幕)・プロンプト改訂(9/27・10/3・10/5)と同時に変わっているので、モデルのせいとは断定しない。切り分けには同じレースを旧モデルでも予想させて印だけ比べる(影の予想)のが要る</li></ul><table><tr><th>区分</th><th>R</th><th>的中</th><th>回収率</th><th>的中率</th></tr><tr><td>平場</td><td>23</td><td>2</td><td>19%</td><td>9%</td></tr><tr><td>重賞</td><td>1</td><td>0</td><td>0%</td><td>0%</td></tr></table></main><footer>予想は自動生成の私的な記録であり、的中を保証するものではありません。馬券の購入は自己責任で。</footer><div id="wv" hidden><div class="wv-back" onclick="wvClose()"></div><div class="wv-sheet"><div class="wv-grab"></div><button class="wv-x" onclick="wvClose()" aria-label="閉じる"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M2 2l11 11M13 2L2 13" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg></button><div class="wv-body"></div></div></div>
+<script>
+(function(){
+ var wv=document.getElementById('wv'),body=wv.querySelector('.wv-body'),open=false;
+ // iframeはDOM挿入前にsrcを入れて生成する。既存iframeにsrcを代入すると
+ // 閲覧履歴が増え、戻る操作でiframeだけ空白になってしまうため。
+ function mount(u){
+  body.innerHTML='';
+  var f=document.createElement('iframe');
+  f.className='wv-frame';f.title='外部ページ';f.setAttribute('src',u);
+  body.dataset.ok='';
+  f.onload=function(){body.dataset.ok='1'};   // 読み込めたら案内を出さない
+  body.appendChild(f);
+ }
+ window.wvClose=function(){
+  if(!open)return;
+  open=false;
+  wv.classList.add('closing');
+  setTimeout(function(){
+   wv.classList.remove('closing');body.innerHTML='';wv.hidden=true;document.body.style.overflow='';
+  },200);
+  if(location.hash==='#view')history.replaceState(null,'',location.pathname+location.search);
+ };
+ document.addEventListener('click',function(e){
+  var a=e.target.closest('a');if(!a)return;
+  if(a.hasAttribute('data-ext'))return;   // 外部アプリで開くリンク(埋め込み不可のもの)は素通し
+  var u=a.getAttribute('href')||'';if(!/^https?:/.test(u))return;
+  if(new URL(u,location.href).host===location.host)return;
+  e.preventDefault();
+  mount(u);wv.hidden=false;open=true;document.body.style.overflow='hidden';
+  // 読み込めない時に真っ白のままにしない(netkeiba側の制限や障害への保険)
+  clearTimeout(window.__wvT);
+  window.__wvT=setTimeout(function(){
+    var b=wv.querySelector('.wv-body'); if(!b||!open)return;
+    if(b.dataset.ok==='1')return;
+    b.insertAdjacentHTML('beforeend','<div class="wv-fallback">'+
+      '<p>ページを読み込めませんでした。</p>'+
+      '<p class="sub">netkeiba側の一時的な制限の可能性があります。少し時間をおくか、下から直接開いてください。</p>'+
+      '<a class="button" target="_blank" rel="noopener" href="'+u+'">netkeibaで開く</a></div>');
+  },3500);
+  // 戻る連打でも離脱しないよう履歴に余裕を持たせる
+  for(var k=0;k<3;k++)history.pushState({wv:1},'','#view');
+ });
+ // ビューア表示中の「戻る」は無効化する(閉じるのは✕か背景タップのみ)。
+ // 履歴を戻し返してサイト離脱を防ぐ。
+ window.addEventListener('popstate',function(){
+  if(open){history.pushState({wv:1},'','#view');history.pushState({wv:1},'','#view');}
+ });
+ fetch("../version.json",{cache:"no-store"}).then(function(r){return r.json()}).then(function(v){
+  if(v.build!=="20261010185604" && !sessionStorage.getItem("rl_"+v.build)){
+   sessionStorage.setItem("rl_"+v.build,"1");location.reload();}
+ }).catch(function(){});
+})();
+</script></body></html>
