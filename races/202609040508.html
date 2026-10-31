@@ -145,7 +145,7 @@ render();
   if(open){history.pushState({wv:1},'','#view');history.pushState({wv:1},'','#view');}
  });
  fetch("../version.json",{cache:"no-store"}).then(function(r){return r.json()}).then(function(v){
-  if(v.build!=="538e2ea121634b" && !sessionStorage.getItem("rl_"+v.build)){
+  if(v.build!=="c3935dec02c78c" && !sessionStorage.getItem("rl_"+v.build)){
    sessionStorage.setItem("rl_"+v.build,"1");location.reload();}
  }).catch(function(){});
 })();
