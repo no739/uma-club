@@ -177,7 +177,7 @@ render();
   if(open){history.pushState({wv:1},'','#view');history.pushState({wv:1},'','#view');}
  });
  fetch("../version.json",{cache:"no-store"}).then(function(r){return r.json()}).then(function(v){
-  if(v.build!=="2b9887c02108df" && !sessionStorage.getItem("rl_"+v.build)){
+  if(v.build!=="ee84fc7f486d0e" && !sessionStorage.getItem("rl_"+v.build)){
    sessionStorage.setItem("rl_"+v.build,"1");location.reload();}
  }).catch(function(){});
 })();
