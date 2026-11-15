@@ -139,7 +139,7 @@ el('go').onclick=run;
   if(open){history.pushState({wv:1},'','#view');history.pushState({wv:1},'','#view');}
  });
  fetch("version.json",{cache:"no-store"}).then(function(r){return r.json()}).then(function(v){
-  if(v.build!=="c9d4804e98cfca" && !sessionStorage.getItem("rl_"+v.build)){
+  if(v.build!=="b15fe0ff82fa6b" && !sessionStorage.getItem("rl_"+v.build)){
    sessionStorage.setItem("rl_"+v.build,"1");location.reload();}
  }).catch(function(){});
 })();
