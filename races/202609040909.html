@@ -165,7 +165,7 @@ render();
   if(open){history.pushState({wv:1},'','#view');history.pushState({wv:1},'','#view');}
  });
  fetch("../version.json",{cache:"no-store"}).then(function(r){return r.json()}).then(function(v){
-  if(v.build!=="de548be9fc2815" && !sessionStorage.getItem("rl_"+v.build)){
+  if(v.build!=="2fb22b75125255" && !sessionStorage.getItem("rl_"+v.build)){
    sessionStorage.setItem("rl_"+v.build,"1");location.reload();}
  }).catch(function(){});
 })();
